@@ -5,8 +5,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
+        }
+
+        .left-text {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .left-text {
+                font-size: 18px;
+                left: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .left-text {
+                font-size: 14px;
+                left: 5px;
+            }
+        }
+
+        form {
+            position: absolute;
+            right: 35%;
+            top: 50%;
+            transform: translate(50%, -50%);
+            width: 60%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            form {
+                right: 10%;
+                width: 80%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            form {
+                right: 5%;
+                width: 90%;
+            }
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
+    <div class="left-text">
+        Display some large text here
+    </div>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}

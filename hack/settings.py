@@ -41,6 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
+    'django_filters',
+    'crispy_bootstrap4',
+    'main'
 ]
 
 MIDDLEWARE = [
@@ -58,7 +62,7 @@ ROOT_URLCONF = 'hack.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [[os.path.join(BASE_DIR,'templates')]],
+        'DIRS': [os.path.join(BASE_DIR,'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

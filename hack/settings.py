@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_filters',
     'crispy_bootstrap4',
-    'main'
+    'main',
+    'pypdf'
 ]
 
 MIDDLEWARE = [

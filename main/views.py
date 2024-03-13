@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from .forms import UploadFileForm
 from django.http import HttpResponseRedirect
+from pypdf import PdfReader
 
 def handle_uploaded_file(f):
-        for chunk in f.chunks():
-            print(chunk)
-
+        reader = PdfReader(f)
+        page = reader.pages[0]
+        text = page.extract_text() 
+        print(text) 
 
 def upload_file(request):
     if request.method == "POST":
@@ -16,5 +18,3 @@ def upload_file(request):
     else:
         form = UploadFileForm()
     return render(request, "upload.html", {"form": form})
-def index(request):
-    return render(request, 'index.html')

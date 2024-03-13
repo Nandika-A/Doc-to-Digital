@@ -7,7 +7,7 @@ def handle_uploaded_file(f):
             print(chunk)
 
 
-def upload_file(request):
+def index(request):
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -16,5 +16,3 @@ def upload_file(request):
     else:
         form = UploadFileForm()
     return render(request, "upload.html", {"form": form})
-def index(request):
-    return render(request, 'index.html')

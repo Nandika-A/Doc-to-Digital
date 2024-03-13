@@ -16,3 +16,5 @@ def upload_file(request):
     else:
         form = UploadFileForm()
     return render(request, "upload.html", {"form": form})
+def index(request):
+    return render(request, 'index.html')

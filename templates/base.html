@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block scripts %}
+    
+    {% endblock scripts %}
+
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">Detective GPT</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/admin_page">Admin Page</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="content">
+        {% block content %}
+        
+        {% endblock content %}
+    </div>
+
+    <footer class="footer">
+        <p>&copy; Detective GPT. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

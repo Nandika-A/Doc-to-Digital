@@ -1,1 +1,10 @@
 .env
+__pycache__/
+*.py[cod]
+*$py.class
+myworld/
+db.sqlite3
+hack/__pycache__/
+main/__pycache__/
+main/__pycache__
+downloads/

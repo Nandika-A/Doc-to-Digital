@@ -1,0 +1,92 @@
+
+{% load static %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.min.js"></script>
+
+<script type = "module" src="{% static 'js/main.js' %}" defer> </script>
+<head>
+    <title>Home Page</title>
+</head>
+{% endblock scripts %}
+
+{% block content %}
+    <div id="container"  style="display: flex; justify-content: flex-end; background-color: #333; color: #fff; font-family: 'Courier New', monospace;">
+        <div id="myThreeJS" >
+            <div id="scene-box"></div>
+        <!-- </div>
+        <div id="htmlContent" >
+            <div id="messages" class = "card">
+                <input type="text" id="message-input" placeholder="Enter message">
+                <button id="send-message">Send</button>
+            </div>
+            <div class="loading" id="js-loader"><div class="loader"></div></div>
+            <form id="upload-form">
+                <input type="file" id="image-upload" accept="image/*"> <!-- take image-->
+                <button type="submit">Upload</button>
+            </form>
+        </div> -->
+    </div>
+    <script>
+        
+    //     var ws = new WebSocket("ws://localhost:8000/practice/");
+    //     var animNo;
+    //     //onmessage waits for connection
+    //     ws.onmessage = function(event) {
+    //         var messages = document.getElementById('messages');
+    //         var message = document.createElement('p');
+    //         message.style.color = 'black';
+    //         try {
+    //             let data = JSON.parse(event.data);
+    //             console.log("data is ",data);
+    //             if (data.animNo) {
+    //                 animNo = data.animNo; //animNo is animation number
+    //                 playWithLLM(animNo);
+    //                 console.log("animNo is ",data.animNo);
+                
+    //             }
+    //             if (data.llm_out) {
+    //                 message.textContent = data.llm_out;
+    //             }
+    //             if (data.image_text) {
+    //                 message.textContent = data.image_text;
+    //                 console.log("image text is ",data.image_text);
+    //             }
+    //             messages.appendChild(message);
+                
+    //         } catch (error) {
+    //             console.error("Error parsing JSON:", event.data);
+    //             console.error(error);
+    //         }
+    //     };
+    
+    //     var messageInput = document.getElementById('message-input');
+    //     var sendMessageButton = document.getElementById('send-message');
+    
+    //     sendMessageButton.addEventListener('click', function() {
+    //         var message = messageInput.value;
+            
+    //         if (message.trim() !== '') { // Check if message is not empty
+    //             console.log(message);
+    //             ws.send(message);
+    //             messageInput.value = ''; 
+    //         }
+    //     });
+    //     document.getElementById('upload-form').addEventListener('submit', function(event) {
+    //         event.preventDefault();
+    //         var fileInput = document.getElementById('image-upload');
+    //         var file = fileInput.files[0];
+    //         if (file) { // Check if file is not null
+    //             var reader = new FileReader();
+    //             reader.onload = function(event) {
+    //                 var arrayBuffer = event.target.result;
+    //                 ws.send(arrayBuffer);
+    //             };
+    //             reader.readAsArrayBuffer(file);
+    //             fileInput.value = ''; // Clear the file input
+    //         }
+    //     });
+    
+    </script>
+    
+{% endblock %}

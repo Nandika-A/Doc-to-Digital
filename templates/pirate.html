@@ -2,31 +2,37 @@
 {% load static %}
 
 {% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.min.js"></script>
-
-<script type = "module" src="{% static 'js/main.js' %}" defer> </script>
 <head>
     <title>Home Page</title>
 </head>
 {% endblock scripts %}
 
 {% block content %}
-    <div id="container"  style="display: flex; justify-content: flex-end; background-color: #333; color: #fff; font-family: 'Courier New', monospace;">
-        <div id="myThreeJS" >
-            <div id="scene-box"></div>
-        <!-- </div>
-        <div id="htmlContent" >
+    
+        <!--<div id="myThreeJS" >-->
+            <div id="loadingDiv">
+                <p id="loadingText" class="font-weight-light">L O A D I N G</p>
+                <span class="loader"></span>
+            </div>
+        
+            <!-- Info Text -->
+            <div id="info-text-container">
+                <h4 id="info-text">Current Animation</h4>
+            </div>
+            <canvas id="renderCanvas"></canvas>
+        <!--</div>-->
+        <!-- <div id="htmlContent" >
             <div id="messages" class = "card">
                 <input type="text" id="message-input" placeholder="Enter message">
                 <button id="send-message">Send</button>
             </div>
             <div class="loading" id="js-loader"><div class="loader"></div></div>
             <form id="upload-form">
-                <input type="file" id="image-upload" accept="image/*"> <!-- take image-->
+                <input type="file" id="image-upload" accept="image/*"> take image
                 <button type="submit">Upload</button>
             </form>
         </div> -->
-    </div>
+    
     <script>
         
     //     var ws = new WebSocket("ws://localhost:8000/practice/");
@@ -88,5 +94,9 @@
     //     });
     
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.min.js"></script>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script src="{% static 'js/bundle.js' %}" defer> </script>
     
 {% endblock %}

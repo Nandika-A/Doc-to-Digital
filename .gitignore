@@ -8,3 +8,4 @@ hack/__pycache__/
 main/__pycache__/
 main/__pycache__
 downloads/
+node_modules/

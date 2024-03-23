@@ -23,10 +23,15 @@ document.addEventListener("DOMContentLoaded", startGame);
 function startGame() {
     // Set Canvas & Engine //
     canvas = document.getElementById("renderCanvas");
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
     //console.log(canvas);
     engine = new BABYLON.Engine(canvas, true);
     scene = createScene(engine, canvas);
-    camera = new BABYLON.ArcRotateCamera("camera", BABYLON.Tools.ToRadians(-90), BABYLON.Tools.ToRadians(65), 6, BABYLON.Vector3.Zero(), scene);
+    camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(0, 0, 0), scene);
     console.log(camera);
     var toRender = function () {
         scene.render();
@@ -58,7 +63,7 @@ function startGame() {
     ground.receiveShadows = true;
 
     setLighting();    
-    importAnimationsAndModel("https://models.readyplayer.me/65f86c8897e3a356389d9b8c.glb");
+    importAnimationsAndModel("https://models.readyplayer.me/65f86c8897e3a356389d9b8c.glb?quality=high");
 
     // scene.debugLayer.show({embedMode: true}).then(function () {
     // });
@@ -73,24 +78,12 @@ function createScene(engine, canvas) {
 
 
 
-// Create ArcRotateCamera //
+// Create Follow Camera
 function createCamera() {  
-    camera.position.z = 10;
-    camera.setTarget(new BABYLON.Vector3(0, 1, 0));
-    camera.allowUpsideDown = false;
-    camera.panningSensibility = 0;
-    camera.lowerRadiusLimit = 2;
-    camera.upperRadiusLimit = 16;
-    camera.lowerBetaLimit = 0.75;
-    camera.upperBetaLimit = Math.PI / 2;
-    camera.panningSensibility = 0;
-    camera.pinchDeltaPercentage = 0.00050;
-    camera.wheelPrecision = 60;
-    camera.useBouncingBehavior = false;
-    camera.useAutoRotationBehavior = true;
-    camera.autoRotationBehavior.idleRotationSpeed = 0.15;
-    camera.radius = 5;
+    camera.position.z = 2.5;
+    camera.position.y = 1.2;
     camera.attachControl(canvas, true);
+    camera.setTarget(new BABYLON.Vector3(0, 1, 0));
 }
 
 // Setup Animations & Player
@@ -152,66 +145,52 @@ function importModel(model) {
         scene.animationGroups[0].play(true, 1.0);
         console.log("Animations: " + scene.animationGroups);
         console.log("Animations: " + scene.animationGroups.length);
-        document.getElementById("info-text").innerHTML = "Current Animation<br>" + scene.animationGroups[0].name;
+        // document.getElementById("info-text").innerHTML = "Current Animation<br>" + scene.animationGroups[0].name;
         currentAnimation = scene.animationGroups[0];
         hideLoadingView();
  
     });
 }
 
-// // Random Number
-// function getRandomInt(min, max) {
-//     min = Math.ceil(min);
-//     max = Math.floor(max);
-//     return Math.floor(Math.random() * (max - min + 1)) + min;
-// }
 
-// // Random Animation Function
-// var disableButton = false;
-// function randomAnimation() {  
 
-//     if (disableButton)
-//         return;
-//     disableButton = true;
-//     setTimeout(() => {
-//         disableButton = false;
-//     }, 500);
+function randomAnimation() {  
 
-//     var randomNumber = getRandomInt(1, 13);
-//     var newAnimation = scene.animationGroups[randomNumber];
-//     // console.log("Random Animation: " + newAnimation.name);
+    var randomNumber = 4; //getInt(1, 13);
+    var newAnimation = scene.animationGroups[randomNumber];
+    // console.log("Random Animation: " + newAnimation.name);
 
-//     // Check if currentAnimation === newAnimation
-//     while (currentAnimation === newAnimation) {
-//         randomNumber = getRandomInt(1, 9);
-//         newAnimation = scene.animationGroups[randomNumber];
-//         console.log("Rechecking Anim: " + newAnimation.name);
-//     }
+    // Check if currentAnimation === newAnimation
+    // while (currentAnimation === newAnimation) {
+    //     randomNumber = getRandomInt(1, 9);
+    //     newAnimation = scene.animationGroups[randomNumber];
+    //     console.log("Rechecking Anim: " + newAnimation.name);
+    // }
 
-//     scene.onBeforeRenderObservable.runCoroutineAsync(animationBlending(currentAnimation, 1.0, newAnimation, 1.0, true, 0.02));
-//     document.getElementById("info-text").innerHTML = "Current Animation<br>" + newAnimation.name;
-// }
+    scene.onBeforeRenderObservable.runCoroutineAsync(animationBlending(currentAnimation, 1.0, newAnimation, 1.0, true, 0.02));
+    //document.getElementById("info-text").innerHTML = "Current Animation<br>" + newAnimation.name;
+}
 
-// // Animation Blending
-// function* animationBlending(fromAnim, fromAnimSpeedRatio, toAnim, toAnimSpeedRatio, repeat, speed)
-// {
-//     let currentWeight = 1;
-//     let newWeight = 0;
-//     fromAnim.stop();
-//     toAnim.play(repeat);
-//     fromAnim.speedRatio = fromAnimSpeedRatio;
-//     toAnim.speedRatio = toAnimSpeedRatio;
-//     while(newWeight < 1)
-//     {
-//         newWeight += speed;
-//         currentWeight -= speed;
-//         toAnim.setWeightForAllAnimatables(newWeight);
-//         fromAnim.setWeightForAllAnimatables(currentWeight);
-//         yield;
-//     }
+// Animation Blending
+function* animationBlending(fromAnim, fromAnimSpeedRatio, toAnim, toAnimSpeedRatio, repeat, speed)
+{
+    let currentWeight = 1;
+    let newWeight = 0;
+    fromAnim.stop();
+    toAnim.play(repeat);
+    fromAnim.speedRatio = fromAnimSpeedRatio;
+    toAnim.speedRatio = toAnimSpeedRatio;
+    while(newWeight < 1)
+    {
+        newWeight += speed;
+        currentWeight -= speed;
+        toAnim.setWeightForAllAnimatables(newWeight);
+        fromAnim.setWeightForAllAnimatables(currentWeight);
+        yield;
+    }
 
-//     currentAnimation = toAnim;
-// }
+    currentAnimation = toAnim;
+}
 
 // Environment Lighting
 function setLighting() {

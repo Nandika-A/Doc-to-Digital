@@ -36,14 +36,15 @@ def handle_uploaded_file(f):
     return summary_pages
 
 def index(request):
-    if request.method == "POST":
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            summary_page = handle_uploaded_file(request.FILES["file"])
-            return render(request, "summary.html", {"summary": summary_page})
-    else:
-        form = UploadFileForm()
-    return render(request, "upload.html", {"form": form})
+    # if request.method == "POST":
+    #     form = UploadFileForm(request.POST, request.FILES)
+    #     if form.is_valid():
+    #         summary_page = handle_uploaded_file(request.FILES["file"])
+    #         return render(request, "summary.html", {"summary": summary_page})
+    # else:
+    #     form = UploadFileForm()
+    # return render(request, "upload.html", {"form": form})
+    return render(request, "test.html")
 
 def speech(summary):
     """

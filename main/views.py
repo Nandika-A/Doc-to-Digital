@@ -4,9 +4,13 @@ from django.http import HttpResponseRedirect
 from pypdf import PdfReader
 import os
 from hack.settings import BASE_DIR
+from summarizer.summarizer import query
 
-def text_per_page(text):
-    print(text)
+def summary_per_page(text):   	
+    output = query({
+        "inputs": text,
+    })
+    print(output)
 
 def handle_uploaded_file(f):
     reader = PdfReader(f)
@@ -17,7 +21,7 @@ def handle_uploaded_file(f):
 
     for page in reader.pages:
         text = page.extract_text() 
-        text_per_page(text)
+        summary_per_page(text)
         count = 0
 
         for image_file_object in page.images:

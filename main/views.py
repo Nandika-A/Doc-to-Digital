@@ -4,6 +4,9 @@ from pypdf import PdfReader
 import os
 from hack.settings import BASE_DIR
 from summarizer.summarizer import query
+import multiprocessing
+import time
+from django.http import JsonResponse
 
 def summary_per_page(text):   	
     output = query({
@@ -11,37 +14,40 @@ def summary_per_page(text):
     })
     return output
 
-def handle_uploaded_file(f):
-    reader = PdfReader(f)
-    path = os.path.join(BASE_DIR,'downloads')
-    summary_pages = []
-    if not os.path.exists(path):
-        os.makedirs(path)
+def process_text(text, result_queue):
+    image_file = extract_tokens(text)
+    summary = summary_per_page(text)
+    audio_file = text_to_speech(summary)
+    result_queue.put((audio_file, image_file))
 
-    for page in reader.pages:
-        text = page.extract_text() 
-        #below functions have to be made asynchronous
-        extract_tokens(text) #gets the list of tokens
-        summary = summary_per_page(text) #pass this to text to speech
-        text_to_speech(summary)
-        #try to make it real time with websockets.
-        #display summary as "notes" of the doc on a page
-        summary_pages.append(summary)
-        count = 0
-
-        for image_file_object in page.images:
-            with open(os.path.join(path, str(count) + image_file_object.name), "wb") as fp:
-                fp.write(image_file_object.data)
-                count += 1
-
-    return summary_pages
+def render_page_on_webpage(audio_file, image_file):
+    """
+    This function will render the audio and image on the webpage.
+    """
+    time.sleep(5)
+    return JsonResponse({'audio_file': audio_file, 'image_file': image_file})
 
 def index(request):
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
+
         if form.is_valid():
-            summary_page = handle_uploaded_file(request.FILES["file"])
-            return render(request, "summary.html", {"summary": summary_page})
+            file = request.FILES["file"]
+            reader = PdfReader(file)
+            result_queue = multiprocessing.Queue()
+            processes = []
+            for page in reader.pages:
+                text = page.extract_text()
+                process = multiprocessing.Process(target=process_text, args=(text, result_queue))
+                process.start()
+                processes.append(process)              
+                audio_file, image_file = result_queue.get()
+                render_page_on_webpage(audio_file, image_file)
+
+            for process in processes:
+                process.join()
+
+            return render(request, "summary.html")
     else:
         form = UploadFileForm()
     return render(request, "upload.html", {"form": form})
@@ -58,9 +64,10 @@ def extract_tokens(text):
     This function extracts tokens from the text passed page by page.
     These tokens will be used for web scrapping the image for each page. 
     Extract 1 to 2 tokens per page at max and while generating pass them in the form of a list of 1 token to the scrapper.
+    Return back the result of the scrapper.
     """
     token = []
-    scrapper(token)
+    return scrapper(token)
 
 def scrapper(tokens):
     """

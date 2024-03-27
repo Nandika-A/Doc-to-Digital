@@ -12,17 +12,9 @@ def summary_per_page(text):
 def index(request):
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
-
         if form.is_valid():
-            file = request.FILES["file"]
-            reader = PdfReader(file)
-            for page in reader.pages:
-                text = page.extract_text()
-                image_file = extract_tokens(text)
-                summary = summary_per_page(text)
-                audio_file = text_to_speech(summary)
-
-            return render(request, "summary.html")
+            summary_page = handle_uploaded_file(request.FILES["file"])
+            return render(request, "summary.html", {"summary": summary_page})
     else:
         form = UploadFileForm()
     return render(request, "upload.html", {"form": form})

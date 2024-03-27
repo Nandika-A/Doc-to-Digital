@@ -3,8 +3,10 @@ from .forms import UploadFileForm
 from summarizer.summarizer import query
 import os
 from hack.settings import BASE_DIR
+import asyncio
 
-def summary_per_page(text):   	
+async def summary_per_page(text):
+    print(1)   	
     output = query({
         "inputs": text,
     })
@@ -26,20 +28,22 @@ def index(request):
         form = UploadFileForm()
     return render(request, "upload.html", {"form": form})
 
-def text_to_speech(summary):
+async def text_to_speech(summary):
     """
     This function gets the summary of each page and converts it to speech for each page.
     This will be modified such that as soon as it completes the speech for one page, it will start the speech for the next page.
     """
+    print("2")
     return "hello"
 
-def extract_tokens(text):
+async def extract_tokens(text):
     """
     This function extracts tokens from the text passed page by page.
     These tokens will be used for web scrapping the image for each page. 
     Extract 1 to 2 tokens per page at max and while generating pass them in the form of a list of 1 token to the scrapper.
     Return back the result of the scrapper.
     """
+    print(3)
     token = []
     return scrapper(token)
 

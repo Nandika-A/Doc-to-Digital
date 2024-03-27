@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Summary</title>
 </head>
-<body>
+<body>   
 </body>
 <script>
     var socket = new WebSocket("ws://" + window.location.host + "/ws/summary/");
@@ -14,6 +14,7 @@
         console.log("Successfully connected to the WebSocket.");
         var file = "{{ file }}";
         socket.send(JSON.stringify({file: file}));
+        console.log("Message sent.");
     }
 
     socket.onmessage = function(e) {

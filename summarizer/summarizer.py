@@ -1,10 +1,7 @@
-from dotenv import load_dotenv
 import requests
-import os
-load_dotenv() 
-API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
-TOKEN = os.getenv("SUMMARIZER_API_TOKEN")
-headers = {"Authorization": f"Bearer {TOKEN}"}
+
+API_URL = "https://api-inference.huggingface.co/models/google/bigbird-pegasus-large-arxiv"
+headers = {"Authorization": "Bearer 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"}
 
 def query(payload):
 	response = requests.post(API_URL, headers=headers, json=payload)

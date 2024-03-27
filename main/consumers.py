@@ -23,3 +23,4 @@ class Consumer(AsyncWebsocketConsumer):
                 "summary": summary,
                 "audio": audio_file,
             }))
+            await asyncio.sleep(3) #wait for audio.length + 1 seconds

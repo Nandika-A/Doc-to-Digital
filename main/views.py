@@ -5,28 +5,12 @@ from pypdf import PdfReader
 import os
 from hack.settings import BASE_DIR
 from summarizer.summarizer import query
-import multiprocessing
-import time
-from django.http import JsonResponse
 
 def summary_per_page(text):   	
     output = query({
         "inputs": text,
     })
     return output
-
-def process_text(text, result_queue):
-    image_file = extract_tokens(text)
-    summary = summary_per_page(text)
-    audio_file = text_to_speech(summary)
-    result_queue.put((audio_file, image_file))
-
-def render_page_on_webpage(audio_file, image_file):
-    """
-    This function will render the audio and image on the webpage.
-    """
-    time.sleep(5)
-    return JsonResponse({'audio_file': audio_file, 'image_file': image_file})
 
 def index(request):
     if request.method == "POST":
@@ -35,25 +19,18 @@ def index(request):
         if form.is_valid():
             file = request.FILES["file"]
             reader = PdfReader(file)
-            result_queue = multiprocessing.Queue()
-            processes = []
             for page in reader.pages:
                 text = page.extract_text()
-                process = multiprocessing.Process(target=process_text, args=(text, result_queue))
-                process.start()
-                processes.append(process)              
-                audio_file, image_file = result_queue.get()
-                render_page_on_webpage(audio_file, image_file)
-
-            for process in processes:
-                process.join()
+                # image_file = extract_tokens(text)
+                # summary = summary_per_page(text)
+                # audio_file = text_to_speech(summary)
 
             return render(request, "summary.html")
     else:
         form = UploadFileForm()
     return render(request, "upload.html", {"form": form})
 
-def speech(summary):
+def text_to_speech(summary):
     """
     This function gets the summary of each page and converts it to speech for each page.
     This will be modified such that as soon as it completes the speech for one page, it will start the speech for the next page.

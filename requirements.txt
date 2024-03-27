@@ -2,3 +2,5 @@ django-crispy-forms
 pypdf
 pypdf[image]
 transformers
+daphne
+channels

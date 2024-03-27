@@ -7,8 +7,24 @@
     <title>Summary</title>
 </head>
 <body>
-    {% for s in summary %}
-        <p>{{ s }}</p>
-    {% endfor %}
 </body>
+<script>
+    var socket = new WebSocket("ws://" + window.location.host + "/ws/summary/");
+    socket.onopen = function(e) {
+        console.log("Successfully connected to the WebSocket.");
+        var file = "{{ file }}";
+        socket.send(JSON.stringify({file: file}));
+    }
+
+    socket.onmessage = function(e) {
+        console.log("Received message: " + e.data);
+        var data = JSON.parse(e.data);
+        var summary = data.summary;
+        var image = data.image;
+        var audio = data.audio;
+        console.log(summary);
+        console.log(image);
+        console.log(audio);
+    }
+</script>
 </html>

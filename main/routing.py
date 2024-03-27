@@ -3,5 +3,5 @@ from django.urls import path
 from . import consumers
 
 ws_urlpatterns = [
-    path("ws/test/", consumers.Consumer.as_asgi())
+    path("ws/summary/", consumers.Consumer.as_asgi())
 ]

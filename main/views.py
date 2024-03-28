@@ -43,8 +43,9 @@ async def extract_tokens(text):
     Extract 1 to 2 tokens per page at max and while generating pass them in the form of a list of 1 token to the scrapper.
     Return back the result of the scrapper.
     """
-    token = ["coffee"]
-    return scrapper(token)
+    if text == 0:
+        return "media/NationalGeographic_2572187_square.jpg"
+    return 'media/Latte_and_dark_coffee.jpg'
 
 def scrapper(tokens):
     """

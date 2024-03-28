@@ -6,6 +6,7 @@ from hack.settings import BASE_DIR
 import asyncio
 import requests
 import main.scrapping_images as si
+from key.keywordfile import keywordfunc
 
 async def summary_per_page(text):   	
     output = await query({
@@ -37,15 +38,30 @@ async def text_to_speech(summary):
     return "hello"
 
 async def extract_tokens(text):
+    output = await keywordfunc({
+	    "inputs": f"{text}",
+    })
+    sorted_array = sorted(output, key=lambda x: x['score'], reverse=True)
+    if sorted_array:
+        if len(sorted_array) >= 2 and sorted_array[0]['word'] != sorted_array[1]['word']:
+            tokens = [sorted_array[0]['word'], sorted_array[1]['word']]
+        else:
+            tokens = [sorted_array[0]['word']]
+    else:
+        tokens = [] 
+
+    print(tokens)
     """
     This function extracts tokens from the text passed page by page.
     These tokens will be used for web scrapping the image for each page. 
     Extract 1 to 2 tokens per page at max and while generating pass them in the form of a list of 1 token to the scrapper.
     Return back the result of the scrapper.
     """
-    if text == 0:
-        return "media/NationalGeographic_2572187_square.jpg"
-    return 'media/Latte_and_dark_coffee.jpg'
+    # if text == 0:
+    #     return "media/NationalGeographic_2572187_square.jpg"
+    # return 'media/Latte_and_dark_coffee.jpg'
+
+    return scrapper(tokens)
 
 def scrapper(tokens):
     """

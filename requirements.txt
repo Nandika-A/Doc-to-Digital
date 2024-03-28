@@ -5,3 +5,7 @@ pypdf[image]
 transformers
 daphne
 channels
+django-filter
+crispy-bootstrap4
+django-allauth
+python-dotenv

@@ -30,7 +30,7 @@ def index(request):
 async def text_to_speech(summary):
     """
     This function gets the summary of each page and converts it to speech for each page.
-    This will be modified such that as soon as it completes the speech for one page, it will start the speech for the next page.
+    After converting the text to speech, save the audio file in audio_files folder and return the path of the audio file.
     """
     return "hello"
 
@@ -46,6 +46,6 @@ async def extract_tokens(text):
 
 def scrapper(tokens):
     """
-    This function scraps the images for the tokens extracted from the text and downloads them in scrapped.
+    This function scraps the images for the tokens extracted from the text and downloads them in scrapped folder.
     """
     return "images/bg.jpg"

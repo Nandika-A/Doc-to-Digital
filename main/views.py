@@ -4,12 +4,14 @@ from summarizer.summarizer import query
 import os
 from hack.settings import BASE_DIR
 import asyncio
+import requests
+import main.scrapping_images as si
 
 async def summary_per_page(text):   	
-    output = await query({
-        "inputs": text,
-    })
-    return output
+    # output = await query({
+    #     "inputs": text,
+    # })
+    return "hi"
 
 def index(request):
     if request.method == "POST":
@@ -41,11 +43,21 @@ async def extract_tokens(text):
     Extract 1 to 2 tokens per page at max and while generating pass them in the form of a list of 1 token to the scrapper.
     Return back the result of the scrapper.
     """
-    token = []
-    return scrapper(token)
+    token = ["coffee"]
+    return 'media/Latte_and_dark_coffee.jpg'
 
 def scrapper(tokens):
     """
     This function scraps the images for the tokens extracted from the text and downloads them in scrapped folder.
     """
-    return "images/bg.jpg"
+    query_list = tokens
+    image_result = si.search(query_list)
+    img_url = image_result[0]
+    response = requests.get(img_url)
+    path = os.path.join(BASE_DIR, 'media')
+    filename = img_url.split("/")[-1]
+    img_path = os.path.join(path, filename)
+    fp = open(img_path, 'wb')
+    fp.write(response.content)
+    fp.close()
+    return 'media/' + filename

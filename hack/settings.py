@@ -35,12 +35,22 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'crispy_forms',
+    'django_filters',
+    'crispy_bootstrap4',
+    'main',
+    'pypdf'
 ]
 
 MIDDLEWARE = [
@@ -51,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'hack.urls'
@@ -72,7 +83,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'hack.wsgi.application'
-
+ASGI_APPLICATION = 'hack.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -134,3 +145,42 @@ MEDIA_ROOT=os.path.join(BASE_DIR,'images/')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'offline',
+        },
+        'OAUTH_PKCE_ENABLED': True,
+    }
+}
+SITE_ID = 1
+
+LOGIN_REDIRECT_URL='index'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER="stellarledger117@gmail.com"
+EMAIL_HOST_PASSWORD=os.getenv("EMAIL_HOST_PASSWORD")
+
+ACCOUNT_AUTHENTICATION_METHOD='username_email'
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS=10
+ACCOUNT_EMAIL_REQUIRED=True
+ACCOUNT_EMAIL_VERIFICATION='None'
+
+ACCOUNT_FORMS = {
+'signup': 'hack.forms.CustomSignupForm',
+}
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

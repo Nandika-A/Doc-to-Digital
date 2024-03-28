@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>Home</title>
+    <style>
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
+        }
+
+        .left-text {
+            position: absolute;
+            left: 20px;
+            top: 30%;
+            transform: translateY(-50%);
+            font-size: 50px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .left-text {
+                font-size: 18px;
+                left: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .left-text {
+                font-size: 14px;
+                left: 5px;
+            }
+        }
+
+        form {
+            position: absolute;
+            right: 30%;
+            top: 50%;
+            transform: translate(50%, -50%);
+            width: 50%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            form {
+                right: 10%;
+                width: 80%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            form {
+                right: 5%;
+                width: 90%;
+            }
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Added code to make navbar overlap the background */
+        .navbar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 5%;
+            z-index: 9999;
+            background-color: transparent;
+        }
+
+        .navbar-brand {
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-nav {
+            margin-left: auto;
+        }
+
+        .nav-link {
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+    <!-- Navbar Brand -->
+    <a style="font-family: sans-serif; font-size: 170%;" class="navbar-brand" href="{% url 'index' %}">AI PDF Tutor</a>
+    
+    <!-- Navbar Toggler for Small Screens -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNavDropdown" style=" font-size: 120%; font-weight: bold;">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="#">About</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Contact</a>
+            </li>
+    {% if user.is_authenticated %}
+    <li class="nav-item dropdown">
+    <button class="nav-link dropdown-toggle" onclick="dropdown()" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border: 0cm; font-weight: bold;">
+        {{ user.username }}
+    </button>
+    <div class="dropdown-menu" id="dropdownuser">
+        <a class="dropdown-item" href="{% url 'account_reset_password' %}">Password Reset</a>
+        <a class="dropdown-item" href="{% url 'account_set_password' %}">Set Password</a>
+        <a class="dropdown-item" href="{% url 'account_email_verification_sent' %}">Confirm Email</a>
+        <a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a>
+    </div>
+    </li>
+    {% else %}
+    <li class="nav-item">
+    <a class="nav-link" href="{% url 'account_login' %}">login</a>
+    </li>
+    {% endif %}
+    </ul>
+    </div>
+    </nav>
+    <main style="
+    background-image: url('images/bg.jpg');
+    height: 100vh;
+    width: 100vw;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+">
+    <div class="left-text">
+        Display some large text here
+    </div>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit">
+    </form>
+    </main>
+</body>
+<script src="https://c0f4f41c-2f55-4863-921b-sdk-docs.github.io/cdn/metamask-sdk.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script>
+        function dropdown() {
+      document.getElementById("dropdownuser").classList.toggle("show");
+    }
+    
+    // Close the dropdown menu if the user clicks outside of it
+    window.onclick = function(event) {
+      if (!event.target.matches('.dropdown-toggle')) {
+        var dropdowns = document.getElementsByClassName("dropdown-menu");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+          }
+        }
+      }
+    }
+      </script>
+</html>

@@ -64,7 +64,7 @@ function startGame() {
 
     setLighting();    
     importAnimationsAndModel("https://models.readyplayer.me/65f86c8897e3a356389d9b8c.glb?quality=high");
-
+    //randomAnimation();
     // scene.debugLayer.show({embedMode: true}).then(function () {
     // });
 }
@@ -100,6 +100,29 @@ async function importAnimationsAndModel(model) {
     //     var int = index + 1;
     //     await importAnimations("/masculine/expression/M_Standing_Expressions_00" + int + ".glb");
     // }
+    await importAnimations("F_Run_Jump_001.glb");
+    await importAnimations("M_Dances_001.glb");
+    await importAnimations("M_Dances_002.glb");
+    for (let index = 0; index < 9; index++) {
+        var int = index + 1;
+        if(int === 3){
+            continue;
+        }
+        await importAnimations("M_Standing_Expressions_00" + int + ".glb");
+    }
+    for (let index = 9; index < 12; index++) {
+        var int = index + 1;
+        if(int === 3){
+            continue;
+        }
+        await importAnimations("M_Standing_Expressions_0" + int + ".glb");
+    }
+    for (let index = 0; index < 9; index++) {
+        
+        var int = index + 1;
+        await importAnimations("M_Talking_Variations_00" + int + ".glb");
+    }
+    await importAnimations("M_Talking_Variations_010.glb");
     importModel(model);
 }
 
@@ -129,6 +152,7 @@ function importModel(model) {
         var modelTransformNodes = player.getChildTransformNodes();
         
         animationsGLB.forEach((animation) => {
+
           const modelAnimationGroup = animation.clone(model.replace(".glb", "_") + animation.name, (oldTarget) => {
             return modelTransformNodes.find((node) => node.name === oldTarget.name);
           });
@@ -141,12 +165,18 @@ function importModel(model) {
         // Merge Meshes
     
         setReflections();
-        setShadows();
-        scene.animationGroups[0].play(true, 1.0);
+        setShadows();   //3 is weird dance 4 is wave hi
+        //5 is point //6 is shrug yes //7 is shrug maybe //8 is stretch  //9 is body laugh  
+        //10 point and come on gesture //11 bend and come on gesture //12 come on gesture
+        //13 really bad/ no gesture //14 good job gesture //15 this is how it is hand subtle movements
+        //16 more explain hand movements //17 no explanation hand movements //18 absoluteky not
+        //19 explanation hand movements //20 explanation g=hand movements //21 explanation hand movements
+        //22 no explanation hand movements //23 not sure explanation hand movements //24 explanation hand movements
+        
+        scene.animationGroups[24].play(true, 1.0);
         console.log("Animations: " + scene.animationGroups);
         console.log("Animations: " + scene.animationGroups.length);
-        // document.getElementById("info-text").innerHTML = "Current Animation<br>" + scene.animationGroups[0].name;
-        currentAnimation = scene.animationGroups[0];
+        currentAnimation = scene.animationGroups[1];
         hideLoadingView();
  
     });
@@ -239,7 +269,7 @@ function hideLoadingView() {
     document.getElementById("loadingDiv").style.display = "none";
 }
 
-// // Resize Window
-// window.addEventListener("resize", function () {
-//     engine.resize();
-// });
+// Resize Window
+window.addEventListener("resize", function () {
+    engine.resize();
+});

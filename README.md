@@ -12,3 +12,6 @@ chmod +x run.sh
 
 Installed new dependencies ? then do:
 pip freeze > requirements.txt
+
+Made any changes to javascript files?do:
+npm run dev 

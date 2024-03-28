@@ -8,10 +8,10 @@ import requests
 import main.scrapping_images as si
 
 async def summary_per_page(text):   	
-    # output = await query({
-    #     "inputs": text,
-    # })
-    return "hi"
+    output = await query({
+        "inputs": text,
+    })
+    return output
 
 def index(request):
     if request.method == "POST":
@@ -44,7 +44,7 @@ async def extract_tokens(text):
     Return back the result of the scrapper.
     """
     token = ["coffee"]
-    return 'media/Latte_and_dark_coffee.jpg'
+    return scrapper(token)
 
 def scrapper(tokens):
     """

@@ -1,3 +1,4 @@
+google-search-results
 django-crispy-forms
 pypdf
 pypdf[image]

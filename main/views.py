@@ -1,40 +1,51 @@
 from django.shortcuts import render
 from .forms import UploadFileForm
-from django.http import HttpResponseRedirect
-from pypdf import PdfReader
+from summarizer.summarizer import query
 import os
 from hack.settings import BASE_DIR
-from summarizer.summarizer import query
+import asyncio
 
-def summary_per_page(text):   	
+async def summary_per_page(text):   	
     output = query({
         "inputs": text,
     })
-    print(output)
-
-def handle_uploaded_file(f):
-    reader = PdfReader(f)
-    path = os.path.join(BASE_DIR,'downloads')
-
-    if not os.path.exists(path):
-        os.makedirs(path)
-
-    for page in reader.pages:
-        text = page.extract_text() 
-        summary_per_page(text)
-        count = 0
-
-        for image_file_object in page.images:
-            with open(os.path.join(path, str(count) + image_file_object.name), "wb") as fp:
-                fp.write(image_file_object.data)
-                count += 1
+    return output
 
 def index(request):
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            handle_uploaded_file(request.FILES["file"])
-            return HttpResponseRedirect(".")
+            file = request.FILES["file"]
+            path = os.path.join(BASE_DIR,'uploads')
+            if not os.path.exists(path):
+                os.makedirs(path)
+            file_path = os.path.join(path, file.name)
+            with open(file_path, "wb") as f:
+                f.write(file.read())
+            return render(request, "summary.html", context={"file": file_path})
     else:
         form = UploadFileForm()
     return render(request, "upload.html", {"form": form})
+
+async def text_to_speech(summary):
+    """
+    This function gets the summary of each page and converts it to speech for each page.
+    After converting the text to speech, save the audio file in audio_files folder and return the path of the audio file.
+    """
+    return "hello"
+
+async def extract_tokens(text):
+    """
+    This function extracts tokens from the text passed page by page.
+    These tokens will be used for web scrapping the image for each page. 
+    Extract 1 to 2 tokens per page at max and while generating pass them in the form of a list of 1 token to the scrapper.
+    Return back the result of the scrapper.
+    """
+    token = []
+    return scrapper(token)
+
+def scrapper(tokens):
+    """
+    This function scraps the images for the tokens extracted from the text and downloads them in scrapped folder.
+    """
+    return "images/bg.jpg"

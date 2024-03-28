@@ -1,0 +1,58 @@
+    <style>
+        #summary-container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+        }
+
+        #summary-image {
+            width: 100%;
+            max-width: 50%; 
+        }
+
+        #summary-details {
+            margin-left: 10%; 
+        }
+
+        #summary-audio {
+            margin-top: 2%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Summary</h1>
+    <div id="summary-container">
+        <img id="summary-image" src="" alt="Summary Image">
+        <div id="summary-details">
+            <p id="summary-text"></p>
+        </div>
+    </div>
+    <audio id="summary-audio" controls>
+        <source src="" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+</body>
+<script>
+    var socket = new WebSocket("ws://" + window.location.host + "/ws/summary/");
+    socket.onopen = function(e) {
+        console.log("Successfully connected to the WebSocket.");
+        var file = "{{ file }}";
+        socket.send(JSON.stringify({file: file}));
+        console.log("Message sent.");
+    }
+
+    socket.onmessage = function(e) {
+        console.log("Received message: " + e.data);
+        var data = JSON.parse(e.data);
+        var summary = data.summary[0].summary_text;
+        var image = data.image;
+        var audio = data.audio;
+        console.log(summary);
+        console.log(image);
+        console.log(audio);
+        document.getElementById("summary-text").innerHTML = summary;
+        document.getElementById("summary-image").src = image;
+        document.getElementById("summary-audio").src = audio;
+    }
+</script>
+</html>

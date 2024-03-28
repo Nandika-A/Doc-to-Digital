@@ -5,8 +5,7 @@ import os
 from hack.settings import BASE_DIR
 import asyncio
 
-async def summary_per_page(text):
-    print(1)   	
+async def summary_per_page(text):   	
     output = query({
         "inputs": text,
     })
@@ -33,7 +32,6 @@ async def text_to_speech(summary):
     This function gets the summary of each page and converts it to speech for each page.
     This will be modified such that as soon as it completes the speech for one page, it will start the speech for the next page.
     """
-    print("2")
     return "hello"
 
 async def extract_tokens(text):
@@ -43,7 +41,6 @@ async def extract_tokens(text):
     Extract 1 to 2 tokens per page at max and while generating pass them in the form of a list of 1 token to the scrapper.
     Return back the result of the scrapper.
     """
-    print(3)
     token = []
     return scrapper(token)
 
@@ -51,4 +48,4 @@ def scrapper(tokens):
     """
     This function scraps the images for the tokens extracted from the text and downloads them in scrapped.
     """
-    return "hi"
+    return "images/bg.jpg"

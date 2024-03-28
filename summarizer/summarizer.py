@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import requests
 import os
 load_dotenv() 
-API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+API_URL = "https://api-inference.huggingface.co/models/google/pegasus-xsum"
 TOKEN = os.getenv("SUMMARIZER_API_TOKEN")
 headers = {"Authorization": f"Bearer {TOKEN}"}
 

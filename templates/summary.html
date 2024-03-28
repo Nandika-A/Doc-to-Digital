@@ -1,15 +1,32 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Summary</title>
+    <style>
+        #summary-container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+        }
+
+        #summary-image {
+            width: 100%;
+            max-width: 50%; 
+        }
+
+        #summary-details {
+            margin-left: 10%; 
+        }
+
+        #summary-audio {
+            margin-top: 2%;
+        }
+    </style>
 </head>
-<body>   
+<body>
     <h1>Summary</h1>
-    <p id="summary-text"></p>
-    <img id="summary-image" src="" alt="Summary Image">
+    <div id="summary-container">
+        <img id="summary-image" src="" alt="Summary Image">
+        <div id="summary-details">
+            <p id="summary-text"></p>
+        </div>
+    </div>
     <audio id="summary-audio" controls>
         <source src="" type="audio/mpeg">
         Your browser does not support the audio element.

@@ -6,7 +6,7 @@ from hack.settings import BASE_DIR
 import asyncio
 
 async def summary_per_page(text):   	
-    output = query({
+    output = await query({
         "inputs": text,
     })
     return output

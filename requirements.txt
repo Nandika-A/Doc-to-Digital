@@ -9,3 +9,5 @@ django-filter
 crispy-bootstrap4
 django-allauth
 python-dotenv
+gtts
+pygame

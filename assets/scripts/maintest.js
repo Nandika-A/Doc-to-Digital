@@ -11,11 +11,13 @@ var dirLight ;
 var hemiLight; 
 var shadowGenerator;
 
+
 var ground;
 var hdrTexture;
 var hdrRotation = 0;
 var hdrSkybox;
 var currentAnimation;
+var leftEye, rightEye;
 
 document.addEventListener("DOMContentLoaded", startGame);
 
@@ -62,8 +64,8 @@ function startGame() {
     ground.material = groundMat;
     ground.receiveShadows = true;
 
-    setLighting();    
-    importAnimationsAndModel("https://models.readyplayer.me/65f86c8897e3a356389d9b8c.glb?quality=high");
+    setLighting();    //https://models.readyplayer.me/--READYPLAYERME--.glb?morphTargets=ARKit&lod=1&textureFormat=webp
+    importAnimationsAndModel("https://models.readyplayer.me/65f86c8897e3a356389d9b8c.glb?morphTargets=ARKit&lod=1&textureFormat=webp&textureQuality=high");
     //randomAnimation();
     // scene.debugLayer.show({embedMode: true}).then(function () {
     // });
@@ -75,8 +77,6 @@ function createScene(engine, canvas) {
     var scene = new BABYLON.Scene(engine);
     return scene;
 }
-
-
 
 // Create Follow Camera
 function createCamera() {  
@@ -92,14 +92,6 @@ var animationsGLB = [];
 // Import Animations and Models
 async function importAnimationsAndModel(model) {
     await importAnimations("F_Standing_Idle_001.glb");
-    // for (let index = 0; index < 9; index++) {
-    //   var int = index + 1;
-    //   await importAnimations("/masculine/dance/M_Dances_00" + int + ".glb");
-    // }
-    // for (let index = 5; index < 9; index++) {
-    //     var int = index + 1;
-    //     await importAnimations("/masculine/expression/M_Standing_Expressions_00" + int + ".glb");
-    // }
     await importAnimations("F_Run_Jump_001.glb");
     await importAnimations("M_Dances_001.glb");
     await importAnimations("M_Dances_002.glb");
@@ -129,7 +121,7 @@ async function importAnimationsAndModel(model) {
 
 // Import Animations
 async function importAnimations(animation) {
-    console.log(animation)
+    //console.log(animation)
     return BABYLON.SceneLoader.ImportMeshAsync(null, "static/animations/", animation, scene)
        .then((result) => {
         result.meshes.forEach(element => {
@@ -139,7 +131,9 @@ async function importAnimations(animation) {
         animationsGLB.push(result.animationGroups[0]);
     });
 }
-  
+function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 // Import Model
 function importModel(model) {
     console.log(model);
@@ -156,13 +150,13 @@ function importModel(model) {
           const modelAnimationGroup = animation.clone(model.replace(".glb", "_") + animation.name, (oldTarget) => {
             return modelTransformNodes.find((node) => node.name === oldTarget.name);
           });
-          console.log(modelAnimationGroup);
+          //console.log(modelAnimationGroup);
           animation.dispose();
         });
         
         animationsGLB = [];
 
-        // Merge Meshes
+        
     
         setReflections();
         setShadows();   //3 is weird dance 4 is wave hi
@@ -173,30 +167,184 @@ function importModel(model) {
         //19 explanation hand movements //20 explanation g=hand movements //21 explanation hand movements
         //22 no explanation hand movements //23 not sure explanation hand movements //24 explanation hand movements
         
-        scene.animationGroups[24].play(true, 1.0);
-        console.log("Animations: " + scene.animationGroups);
-        console.log("Animations: " + scene.animationGroups.length);
-        currentAnimation = scene.animationGroups[1];
+        //scene.animationGroups[24].play(true, 1.0);
+        //console.log("Animations: " + scene.animationGroups);
+        //console.log("Animations: " + scene.animationGroups.length);
+        //currentAnimation = scene.animationGroups[1];
         hideLoadingView();
- 
+        const headMesh = scene.getMeshByName("Wolf3D_Avatar");
+//{    
+//   "targetNames": [
+//     0"browDownLeft",
+//     1"browDownRight",
+//     2"browInnerUp",
+//     3"browOuterUpLeft",
+//     4"browOuterUpRight",
+//     5"eyeSquintLeft",
+//     6"eyeSquintRight",
+//     7"eyeWideLeft",
+//     8"eyeWideRight",
+//     9"jawForward",
+//     10"jawLeft",
+//     11"jawRight",
+//     12"mouthFrownLeft",
+//     13"mouthFrownRight",
+//     14"mouthPucker",
+//     15"mouthShrugLower",
+//     16"mouthShrugUpper",
+//     17"noseSneerLeft",
+//     18"noseSneerRight",
+//     19"mouthLowerDownLeft",
+//     20"mouthLowerDownRight",
+//     21"mouthLeft",
+//     22"mouthRight",
+//     23"eyeLookDownLeft",
+//     24"eyeLookDownRight",
+//     25"eyeLookUpLeft",
+//     26"eyeLookUpRight",
+//     27"eyeLookInLeft",
+//     28"eyeLookInRight",
+//     29"eyeLookOutLeft",
+//     30"eyeLookOutRight",
+//     31"cheekPuff",
+//     32"cheekSquintLeft",
+//     33"cheekSquintRight",
+//     34"jawOpen",
+//     35"mouthClose",
+//     36"mouthFunnel",
+//     37mouthDimpleLeft",
+//     38"mouthDimpleRight",
+//     39"mouthStretchLeft",
+//     40"mouthStretchRight",
+//     41"mouthRollLower",
+//     42"mouthRollUpper",
+//     43"mouthPressLeft",
+//     44"mouthPressRight",
+//     45"mouthUpperUpLeft",
+//     46"mouthUpperUpRight",
+//     47"mouthSmileLeft",
+//     48"mouthSmileRight",
+//     49"tongueOut",
+//     50"eyeBlinkLeft",
+//     51"eyeBlinkRight"
+//   ],
+//   "name": "Wolf3D_Avatar"
+// }
+        
+        // // Animate Face Morphs
+        animateFaceMorphs();
     });
 }
+//idle face movements
+function animateFaceMorphs() {
 
+    const mesh = scene.getMeshByName("Wolf3D_Avatar");
+    console.log(77);
+    const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    // Animate Eyes
+    const animateEyes = async () => {
+        const randomNumber = getRandomNumber(1, 2);
+        if (randomNumber === 1) {
+            const targetValue = randomNumber;
+            const initialValue = mesh.morphTargetManager.getTarget(50).influence;
+            animateMorphTarget(50, initialValue, targetValue, 1);
+            animateMorphTarget(51, initialValue, targetValue, 1);
+            var randomNo = getRandomNumber(100, 200);
+            await wait(randomNo);
+            animateMorphTarget(50, targetValue, initialValue, 1);
+            animateMorphTarget(51, targetValue, initialValue, 1);
+            randomNo = getRandomNumber(100, 200);
+            await wait(randomNo);
+        }
+    }
+    
+    
+    
+    // animateMorphTarget registerBeforeRender
+    const animateMorphTarget = (targetIndex, initialValue, targetValue, numSteps) => {
+        let currentStep = 0;
+        const morphTarget = mesh.morphTargetManager.getTarget(targetIndex);
 
+        const animationCallback = () => {
+            currentStep++;
+            const t = currentStep / numSteps;
+            morphTarget.influence = BABYLON.Scalar.Lerp(initialValue, targetValue, t);
+            if (currentStep >= numSteps) {
+                scene.unregisterBeforeRender(animationCallback);
+            }
+        };
 
-function randomAnimation() {  
+        scene.registerBeforeRender(animationCallback);
+    };
+
+    // Brows
+    const animateBrow = () => {
+        const random = Math.random() * 0.1;
+        const initialValue = mesh.morphTargetManager.getTarget(2).influence;
+        const targetValue = random;
+        animateMorphTarget(2, initialValue, targetValue, 15);
+        animateMorphTarget(3, initialValue, targetValue, 15);
+        animateMorphTarget(4, initialValue, targetValue, 15);
+    };
+
+    // Smile
+    const animateSmile = () => {
+        const random = Math.random() * 0.18 + 0.02;
+        const initialValue = mesh.morphTargetManager.getTarget(47).influence;
+        const targetValue = random;
+        animateMorphTarget(47, initialValue, targetValue, 30);
+        animateMorphTarget(48, initialValue, targetValue, 30);
+    };
+
+    // Mouth Left / Right
+    const animateMouthLeftRight = () => {
+        const random1 = Math.random() * 0.7;
+        const randomLeftOrRight = getRandomNumber(0, 1);
+        const targetIndex = randomLeftOrRight === 1 ? 22 : 21;
+        const initialValue = mesh.morphTargetManager.getTarget(targetIndex).influence;
+        const targetValue = random1;
+        animateMorphTarget(targetIndex, initialValue, targetValue, 90);
+    };
+
+    // Nose
+    const animateNose = () => {
+        const random = Math.random() * 0.7;
+        const initialValue = mesh.morphTargetManager.getTarget(17).influence;
+        const targetValue = random;
+        animateMorphTarget(17, initialValue, targetValue, 60);
+        animateMorphTarget(18, initialValue, targetValue, 60);
+    };
+
+    // Jaw Forward
+    const animateJawForward = () => {
+        const random = Math.random() * 0.5;
+        const initialValue = mesh.morphTargetManager.getTarget(9).influence;
+        const targetValue = random;
+        animateMorphTarget(9, initialValue, targetValue, 60);
+    };
+
+    // Cheeks
+    const animateCheeks = () => {
+        const random = Math.random() * 1;
+        const initialValue = mesh.morphTargetManager.getTarget(32).influence;
+        const targetValue = random;
+        animateMorphTarget(32, initialValue, targetValue, 60);
+        animateMorphTarget(33, initialValue, targetValue, 60);
+    };
+
+    setInterval(animateEyes, 1200);
+    setInterval(animateBrow, 7000);
+    setInterval(animateSmile, 2000);
+    setInterval(animateMouthLeftRight, 1500);
+    setInterval(animateNose, 1000);
+    setInterval(animateJawForward, 2000);
+    setInterval(animateCheeks, 1200);
+};
+
+function randomAnimation() {  //set for web socket
 
     var randomNumber = 4; //getInt(1, 13);
     var newAnimation = scene.animationGroups[randomNumber];
-    // console.log("Random Animation: " + newAnimation.name);
-
-    // Check if currentAnimation === newAnimation
-    // while (currentAnimation === newAnimation) {
-    //     randomNumber = getRandomInt(1, 9);
-    //     newAnimation = scene.animationGroups[randomNumber];
-    //     console.log("Rechecking Anim: " + newAnimation.name);
-    // }
-
     scene.onBeforeRenderObservable.runCoroutineAsync(animationBlending(currentAnimation, 1.0, newAnimation, 1.0, true, 0.02));
     //document.getElementById("info-text").innerHTML = "Current Animation<br>" + newAnimation.name;
 }

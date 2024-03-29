@@ -53,6 +53,7 @@ async def text_to_speech(summary):
     """
     This function gets the summary of each page and converts it to speech for each page.
     After converting the text to speech, save the audio file in audio_files folder and return the path of the audio file.
+    To play the audio file run play_mp3 function
     """
     # play_mp3(mp3_path)
     # print(mp3_path)

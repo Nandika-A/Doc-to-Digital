@@ -15,3 +15,7 @@ pip freeze > requirements.txt
 
 Made any changes to javascript files?do:
 npm run dev 
+
+to use rhubarb:
+sudo chmod +x rhubarb
+./rhubarb -f json media/audio/santa.wav -o santa.json

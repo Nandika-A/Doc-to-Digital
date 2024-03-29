@@ -167,10 +167,10 @@ function importModel(model) {
         //19 explanation hand movements //20 explanation g=hand movements //21 explanation hand movements
         //22 no explanation hand movements //23 not sure explanation hand movements //24 explanation hand movements
         
-        //scene.animationGroups[24].play(true, 1.0);
+        scene.animationGroups[0].play(true, 1.0);
         //console.log("Animations: " + scene.animationGroups);
         //console.log("Animations: " + scene.animationGroups.length);
-        //currentAnimation = scene.animationGroups[1];
+        currentAnimation = scene.animationGroups[1];
         hideLoadingView();
         const headMesh = scene.getMeshByName("Wolf3D_Avatar");
 //{    

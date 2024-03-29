@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render
 from .forms import UploadFileForm
 from summarizer.summarizer import query
@@ -7,6 +8,8 @@ import asyncio
 import requests
 import main.scrapping_images as si
 from key.keywordfile import keywordfunc
+from gtts import gTTS
+import pygame
 
 async def summary_per_page(text):   	
     output = await query({
@@ -30,12 +33,30 @@ def index(request):
         form = UploadFileForm()
     return render(request, "upload.html", {"form": form})
 
+audionum = 3
+
+def play_mp3(file_path):
+    pygame.init()
+    pygame.mixer.init()
+    pygame.mixer.music.load(file_path)
+    pygame.mixer.music.play()
+    while pygame.mixer.music.get_busy():
+        pygame.time.Clock().tick(10)
+
 async def text_to_speech(summary):
+    global audionum 
+    tts = gTTS(f'{summary}',tld ='us',slow=False)
+    mp3_path = f'media/audiofiles/audio{audionum}.mp3'
+    tts.save(mp3_path)
+    audionum = audionum + 1
+
     """
     This function gets the summary of each page and converts it to speech for each page.
     After converting the text to speech, save the audio file in audio_files folder and return the path of the audio file.
     """
-    return "hello"
+    # play_mp3(mp3_path)
+    # print(mp3_path)
+    return mp3_path
 
 async def extract_tokens(text):
     output = await keywordfunc({
@@ -57,11 +78,9 @@ async def extract_tokens(text):
     Extract 1 to 2 tokens per page at max and while generating pass them in the form of a list of 1 token to the scrapper.
     Return back the result of the scrapper.
     """
-    # if text == 0:
-    #     return "media/NationalGeographic_2572187_square.jpg"
-    # return 'media/Latte_and_dark_coffee.jpg'
-
-    return scrapper(tokens)
+    if text == 0:
+        return "media/NationalGeographic_2572187_square.jpg"
+    return 'media/Latte_and_dark_coffee.jpg'
 
 def scrapper(tokens):
     """

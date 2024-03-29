@@ -20,3 +20,14 @@ requests-oauthlib==1.4.0
 sqlparse==0.4.4
 typing_extensions==4.10.0
 urllib3==2.2.1
+google-search-results
+django-crispy-forms
+pypdf
+pypdf[image]
+transformers
+daphne
+channels
+django-filter
+crispy-bootstrap4
+django-allauth
+python-dotenv

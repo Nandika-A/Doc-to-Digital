@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "babylonjs": "^6.47.0",
-    "babylonjs-loaders": "^6.48.0"
+    "babylonjs-loaders": "^6.48.0",
+    "howler": "^2.2.4"
   }
 }

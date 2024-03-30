@@ -78,3 +78,5 @@ def scrapper(tokens):
     fp.write(response.content)
     fp.close()
     return 'media/' + filename
+def character_talk(request):
+    return render(request, "pirate.html")

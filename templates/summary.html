@@ -17,8 +17,10 @@
         }
 
         #summary-image {
+            height: 100%;
             width: 100%;
             max-width: 50%; 
+            max-height: 60%;
         }
 
         #summary-details {
@@ -33,11 +35,10 @@
     <body>
         <h1>Summary</h1>
         <div id="summary-container">
-            <div id="summary-image" class="loader">
-                <span class="loader-text">Loading...</span>
-            </div>
+            <img id="summary-image" src="" alt="Summary Image">
             <div id="summary-details">
-                <p id="summary-text">
+                <p id="summary-text" class="loader">
+                    <span class="loader-text">Loading summary...</span>
                 </p>
             </div>
         </div>
@@ -59,13 +60,27 @@
             console.log("Received message: " + e.data);
             var data = JSON.parse(e.data);
             var summary = data.summary[0].summary_text;
-            var image = data.image;
+            var imageList = data.image;
             var audio = data.audio;
             console.log(summary);
-            console.log(image);
+            console.log(imageList);
             console.log(audio);
+
             document.getElementById("summary-text").innerHTML = summary;
-            document.getElementById("summary-image").innerHTML = `<img src="${image}" alt="Summary Image">`;
+
+            for (var i = 0; i < imageList.length; i++) {
+                var image = imageList[i];
+                if(i > 0)
+                {
+                    setTimeout(() => {
+                        document.getElementById("summary-image").src = image;
+                    }, 2000);
+                }
+                else 
+                {
+                    document.getElementById("summary-image").src = image;
+                }
+            }
             document.getElementById("summary-audio").src = audio;
         }
     </script>

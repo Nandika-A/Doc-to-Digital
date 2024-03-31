@@ -10,7 +10,7 @@ class Consumer(AsyncWebsocketConsumer):
 
     async def process_page(self, text):
         summary_task = asyncio.create_task(summary_per_page(text))
-        image_task = asyncio.create_task(extract_tokens(text))
+        image_task = asyncio.create_task(extract_tokens(text)) #multiple images
         audio_task = asyncio.create_task(text_to_speech(text))
         summary, image, audio = await asyncio.gather(summary_task, image_task, audio_task)
         await self.send_message(summary, image, audio)

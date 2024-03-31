@@ -8,9 +8,9 @@ class Consumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
 
-    async def process_page(self, text, num):
+    async def process_page(self, text):
         summary_task = asyncio.create_task(summary_per_page(text))
-        image_task = asyncio.create_task(extract_tokens(num))
+        image_task = asyncio.create_task(extract_tokens(text))
         audio_task = asyncio.create_task(text_to_speech(text))
         summary, image, audio = await asyncio.gather(summary_task, image_task, audio_task)
         await self.send_message(summary, image, audio)
@@ -18,12 +18,10 @@ class Consumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         file = text_data_json['file']
-        num = 0
         reader = PdfReader(file)
         for page in reader.pages:
             text = page.extract_text()
-            asyncio.create_task(self.process_page(text, num))
-            num += 1
+            asyncio.create_task(self.process_page(text))
             await asyncio.sleep(3) #wait for audio.length + 1 seconds
 
     async def send_message(self, summary, image, audio):

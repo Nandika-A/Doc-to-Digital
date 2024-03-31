@@ -38,6 +38,12 @@ async def text_to_speech(summary):
     return "hello"
 
 async def extract_tokens(text):
+    """
+    This function extracts tokens from the text passed page by page.
+    These tokens will be used for web scrapping the image for each page. 
+    Extract 1 to 2 tokens per page at max and while generating pass them in the form of a list of 1 token to the scrapper.
+    Return back the result of the scrapper.
+    """
     output = await keywordfunc({
 	    "inputs": f"{text}",
     })
@@ -51,17 +57,8 @@ async def extract_tokens(text):
         tokens = [] 
 
     print(tokens)
-    """
-    This function extracts tokens from the text passed page by page.
-    These tokens will be used for web scrapping the image for each page. 
-    Extract 1 to 2 tokens per page at max and while generating pass them in the form of a list of 1 token to the scrapper.
-    Return back the result of the scrapper.
-    """
-    # if text == 0:
-    #     return "media/NationalGeographic_2572187_square.jpg"
-    # return 'media/Latte_and_dark_coffee.jpg'
-
-    return scrapper(tokens)
+    return "hi"
+    # return scrapper(tokens)
 
 def scrapper(tokens):
     """

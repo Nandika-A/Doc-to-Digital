@@ -1,87 +1,93 @@
-        <style>
-            .loader {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100px;
-            }
-
-            .loader-text {
-                font-size: 18px;
-                font-weight: bold;
-            }
-            #summary-container {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summary</title>
+    <style>
+        .loader {
             display: flex;
-            flex-direction: row;
-            align-items: flex-start;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
         }
 
-        #summary-image {
-            height: 100%;
-            width: 100%;
-            max-width: 50%; 
-            max-height: 60%;
+        .loader-text {
+            font-size: 18px;
+            font-weight: bold;
         }
+        #summary-container {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+    }
 
-        #summary-details {
-            margin-left: 10%; 
-        }
+    #summary-image {
+        height: 100%;
+        width: 100%;
+        max-width: 50%; 
+        max-height: 60%;
+    }
 
-        #summary-audio {
-            margin-top: 2%;
-        }
-        </style>
-    </head>
-    <body>
-        <h1>Summary</h1>
-        <div id="summary-container">
-            <img id="summary-image" src="" alt="Summary Image">
-            <div id="summary-details">
-                <p id="summary-text" class="loader">
-                    <span class="loader-text">Loading summary...</span>
-                </p>
-            </div>
+    #summary-details {
+        margin-left: 10%; 
+    }
+
+    #summary-audio {
+        margin-top: 2%;
+    }
+    </style>
+</head>
+<body>
+    <h1>Summary</h1>
+    <div id="summary-container">
+        <img id="summary-image" src="" alt="Summary Image">
+        <div id="summary-details">
+            <p id="summary-text" class="loader">
+                <span class="loader-text">Loading...</span>
+            </p>
         </div>
-        <audio id="summary-audio" controls>
-            <source src="" type="audio/mpeg">
-            Your browser does not support the audio element.
-        </audio>
-    </body>
-    <script>
-        var socket = new WebSocket("ws://" + window.location.host + "/ws/summary/");
-        socket.onopen = function(e) {
-            console.log("Successfully connected to the WebSocket.");
-            var file = "{{ file }}";
-            socket.send(JSON.stringify({file: file}));
-            console.log("Message sent.");
-        }
+    </div>
+    <audio id="summary-audio" controls autoplay>
+        <source src="" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+</body>
+<script>
+    var socket = new WebSocket("ws://" + window.location.host + "/ws/summary/");
+    socket.onopen = function(e) {
+        console.log("Successfully connected to the WebSocket.");
+        var file = "{{ file }}";
+        socket.send(JSON.stringify({file: file}));
+        console.log("Message sent.");
+    }
 
-        socket.onmessage = function(e) {
-            console.log("Received message: " + e.data);
-            var data = JSON.parse(e.data);
-            var summary = data.summary[0].summary_text;
-            var imageList = data.image;
-            var audio = data.audio;
-            console.log(summary);
-            console.log(imageList);
-            console.log(audio);
+    socket.onmessage = function(e) {
+        console.log("Received message: " + e.data);
+        var data = JSON.parse(e.data);
+        var summary = data.summary[0].summary_text;
+        var imageList = data.image;
+        var audio = data.audio;
+        console.log(summary);
+        console.log(imageList);
+        console.log(audio);
 
-            document.getElementById("summary-text").innerHTML = summary;
+        document.getElementById("summary-text").innerHTML = summary;
 
-            for (var i = 0; i < imageList.length; i++) {
-                var image = imageList[i];
-                if(i > 0)
-                {
-                    setTimeout(() => {
-                        document.getElementById("summary-image").src = image;
-                    }, 2000);
-                }
-                else 
-                {
+        for (var i = 0; i < imageList.length; i++) {
+            var image = imageList[i];
+            if(i > 0)
+            {
+                setTimeout(() => {
                     document.getElementById("summary-image").src = image;
-                }
+                }, 2000);
             }
-            document.getElementById("summary-audio").src = audio;
+            else 
+            {
+                document.getElementById("summary-image").src = image;
+            }
         }
-    </script>
-    </html>
+        document.getElementById("summary-audio").src = audio;
+    }
+</script>
+</html>

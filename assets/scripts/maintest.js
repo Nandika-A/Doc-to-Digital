@@ -17,15 +17,15 @@ var hdrTexture;
 var hdrRotation = 0;
 var hdrSkybox;
 var currentAnimation;
-var leftEye, rightEye;
+
 var sound;
 document.addEventListener("DOMContentLoaded", startGame);
-
+console.log("check");
 // Start Game
 function startGame() {
     // Set Canvas & Engine //
 
-
+    console.log("check");
     canvas = document.getElementById("renderCanvas");
     canvas.style.width = '100%';
     canvas.style.height = '100%';
@@ -71,9 +71,10 @@ function startGame() {
     //randomAnimation();
     // scene.debugLayer.show({embedMode: true}).then(function () {
     // });
-    document.addEventListener('click', function() {
-        playAudio();
-    });
+    //playIdle();
+    console.log("check");
+    
+    //animateEyesAll();
 }
 
 // Create Scene
@@ -173,6 +174,9 @@ function importModel(model) {
         //22 no explanation hand movements //23 not sure explanation hand movements //24 explanation hand movements
         
         playIdle();
+        document.addEventListener('click', function() {
+            playAudio();
+        });
         hideLoadingView();
         // // Animate Face Morphs
         
@@ -257,15 +261,12 @@ function playIdle(){
         //console.log("Animations: " + scene.animationGroups);
         //console.log("Animations: " + scene.animationGroups.length);
     currentAnimation = scene.animationGroups[1];
+    //animateEyesAll();
     //animateFaceMorphs();
 };
-
-function animateSyllableMorphs(index){
+function animateEyesAll(){
     const mesh = scene.getMeshByName("Wolf3D_Avatar");
     // animateMorphTarget registerBeforeRender
-    const easingFunction = new BABYLON.QuadraticEase();
-    easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
-
     const animateMorphTarget = (targetIndex, initialValue, targetValue, numSteps) => {
         let currentStep = 0;
         const morphTarget = mesh.morphTargetManager.getTarget(targetIndex);
@@ -281,6 +282,49 @@ function animateSyllableMorphs(index){
 
         scene.registerBeforeRender(animationCallback);
     };
+
+    // Animate Eyes
+    const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const animateEyes = async () => {
+        const randomNumber = getRandomNumber(1, 2);
+        if (randomNumber === 1) {
+            const targetValue = randomNumber;
+            const initialValue = mesh.morphTargetManager.getTarget(50).influence;
+            animateMorphTarget(65, initialValue, targetValue, 1);
+            animateMorphTarget(66, initialValue, targetValue, 1);
+            var randomNo = getRandomNumber(100, 200);
+            await wait(randomNo);
+            animateMorphTarget(65, targetValue, initialValue, 1);
+            animateMorphTarget(66, targetValue, initialValue, 1);
+            randomNo = getRandomNumber(100, 200);
+            await wait(randomNo);
+        }
+    };
+    setInterval(animateEyes, 1200);
+
+}
+
+function animateSyllableMorphs(index){
+    const mesh = scene.getMeshByName("Wolf3D_Avatar");
+    // animateMorphTarget registerBeforeRender
+    const easingFunction = new BABYLON.QuadraticEase();
+    easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+    const animateMorphTarget = (targetIndex, initialValue, targetValue, numSteps) => {
+        let currentStep = 0;
+        const morphTarget = mesh.morphTargetManager.getTarget(targetIndex);
+
+        const animationCallback = () => {
+            currentStep++;
+            const t = currentStep / numSteps;
+            morphTarget.influence = BABYLON.Scalar.Lerp(initialValue, targetValue, t);
+            if (currentStep >= numSteps) {
+                scene.unregisterBeforeRender(animationCallback);
+            }
+        };
+
+        scene.registerBeforeRender(animationCallback);
+    };
+    
     const animateJawForward = () => {
         const random = 0.2;
         //console.log("ele");
@@ -289,6 +333,7 @@ function animateSyllableMorphs(index){
         animateMorphTarget(index, initialValue, 0.3, 0.5);
     };
     animateJawForward();
+    
 }
 //idle face movements
 function animateFaceMorphs() {
@@ -463,62 +508,47 @@ function playAudio(){
         H: 3,//"viseme_TH",
         X: 1,//"viseme_PP",
     };
-    scene.registerBeforeRender(() => {
-        const currentAudioTime = music.currentTime;
+    animateEyesAll();
+    scene.registerBeforeRender(() => {        
         if (music.paused || music.ended) {
           //setAnimation("Idle");
-          return;
+          animateFaceMorphs();
+          
         }
         
         const mesh = scene.getMeshByName("Wolf3D_Avatar");
-        
-        let intervalId;
-        for (let i = 0; i < mouthcues.length; i++) {
-          const mouthCue = mouthcues[i];
-          if (currentAudioTime >= mouthCue.start && currentAudioTime <= mouthCue.end) {
-            const targetIndex = corresponding[mouthCue.value];
-            if (mesh) {
-               //mesh.morphTargetInfluences[targetIndex] = 1;
-                //console.log(mouthCue.value);
-                console.log(targetIndex);
-                if (intervalId) {
-                    clearInterval(intervalId); // Clear the previous interval
-                }
-                const duration = (mouthCue.end - mouthCue.start) * 1000; // Convert to milliseconds
-                intervalId = setInterval(() => {
-                    animateSyllableMorphs(targetIndex);
-                }, duration);
-                setTimeout(() => {
-                    clearInterval(intervalId);
-                }, duration);
-            }
-            break;
-          }
+        let manager = mesh.morphTargetManager;
+
+        // Function to set the influence of a morph target based on a mouth cue
+        function setMouthShape(cue) {
+            let targetIndex = corresponding[cue.value];
+            manager.getTarget(targetIndex).influence = 1;
         }
-      });
+
+        // Function to reset all morph targets
+        function resetMouthShape() {
+            for (let i = 0; i < manager.numTargets; i++) {
+                manager.getTarget(i).influence = 0;
+            }
+        }
+
+        // Iterate over the mouth cues and set the mouth shape at the appropriate times
+        function updateMouthShape() {
+            let currentAudioTime = music.currentTime;
+            for (let i = 0; i < mouthcues.length; i++) {
+                let cue = mouthcues[i];
+                if (currentAudioTime >= cue.start && currentAudioTime <= cue.end) {
+                    resetMouthShape();
+                    setMouthShape(cue);
+                    break;
+                }
+            }
+        }
+        scene.registerBeforeRender(updateMouthShape);
     
-    //   scene.registerBeforeRender(() => {
-    //     const mesh = scene.getMeshByName("Wolf3D_Avatar");
-        
-    //     if (mesh) {
-    //         const visemeIIndex = 12;
-    //         animateSyllableMorphs(visemeIIndex);
-    //     }
-    //     if (playAudio) {
-    //       music.play();
-          
-    //     } 
-    //});
-    //     else {
-    //       setAnimation("Idle");
-    //       audio.pause();
-    //     }
-    //   }, [playAudio, script]);
-    // Play the audio
-    // sound.play();
-    // console.log("test audio");
+       });
     
-    //console.log(lipsync);
+    
 }
 // Environment Lighting
 function setLighting() {

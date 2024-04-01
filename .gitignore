@@ -13,3 +13,5 @@ guide.txt
 /myworld
 /node_modules/
 myenv
+fine_tuned_llm.py
+ft_model/

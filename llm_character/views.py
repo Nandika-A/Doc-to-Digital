@@ -1,10 +1,7 @@
 from django.shortcuts import render
 import os
-import asyncio
-import requests
 import subprocess
-import shlex
-from subprocess import Popen, PIPE
+
 
 def get_llm_output():   	
     #get the llm output here

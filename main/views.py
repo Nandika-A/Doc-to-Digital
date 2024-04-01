@@ -60,6 +60,12 @@ async def text_to_speech(summary):
     return mp3_path
 
 async def extract_tokens(text):
+    """
+    This function extracts tokens from the text passed page by page.
+    These tokens will be used for web scrapping the image for each page. 
+    Extract 1 to 2 tokens per page at max and while generating pass them in the form of a list of 1 token to the scrapper.
+    Return back the result of the scrapper.
+    """
     output = await keywordfunc({
 	    "inputs": f"{text}",
     })
@@ -73,28 +79,26 @@ async def extract_tokens(text):
         tokens = [] 
 
     print(tokens)
-    """
-    This function extracts tokens from the text passed page by page.
-    These tokens will be used for web scrapping the image for each page. 
-    Extract 1 to 2 tokens per page at max and while generating pass them in the form of a list of 1 token to the scrapper.
-    Return back the result of the scrapper.
-    """
-    if text == 0:
-        return "media/NationalGeographic_2572187_square.jpg"
-    return 'media/Latte_and_dark_coffee.jpg'
+    return ["media/Latte_and_dark_coffee.jpg", "media/NationalGeographic_2572187_square.jpg","media/Latte_and_dark_coffee.jpg", "media/NationalGeographic_2572187_square.jpg"]
+    # return scrapper(tokens)
 
 def scrapper(tokens):
     """
     This function scraps the images for the tokens extracted from the text and downloads them in scrapped folder.
+    returns 2 images per token
     """
-    query_list = tokens
-    image_result = si.search(query_list)
-    img_url = image_result[0]
-    response = requests.get(img_url)
     path = os.path.join(BASE_DIR, 'media')
-    filename = img_url.split("/")[-1]
-    img_path = os.path.join(path, filename)
-    fp = open(img_path, 'wb')
-    fp.write(response.content)
-    fp.close()
-    return 'media/' + filename
+    images = []
+    for token in tokens:
+        query_list = [token]
+        image_result = si.search(query_list)
+        for i in [0, 2]:
+            img_url = image_result[i]
+            response = requests.get(img_url)
+            filename = img_url.split("/")[-1]
+            img_path = os.path.join(path, filename)
+            images.append('media/' + filename)
+            fp = open(img_path, 'wb')
+            fp.write(response.content)
+            fp.close()
+    return images

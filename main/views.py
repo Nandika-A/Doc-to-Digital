@@ -10,6 +10,8 @@ import main.scrapping_images as si
 from key.keywordfile import keywordfunc
 from gtts import gTTS
 import pygame
+from texttospeech.tts import download_audio 
+import uuid
 
 async def summary_per_page(text):   	
     output = await query({
@@ -44,11 +46,11 @@ def play_mp3(file_path):
         pygame.time.Clock().tick(10)
 
 async def text_to_speech(summary):
-    global audionum 
-    tts = gTTS(f'{summary}',tld ='us',slow=False)
-    mp3_path = f'media/audiofiles/audio{audionum}.mp3'
-    tts.save(mp3_path)
-    audionum = audionum + 1
+    # global audionum 
+    # tts = gTTS(f'{summary}',tld ='us',slow=False)
+    # mp3_path = f'media/audiofiles/audio{audionum}.mp3'
+    # tts.save(mp3_path)
+    # audionum = audionum + 1
 
     """
     This function gets the summary of each page and converts it to speech for each page.
@@ -57,7 +59,9 @@ async def text_to_speech(summary):
     """
     # play_mp3(mp3_path)
     # print(mp3_path)
-    return mp3_path
+    id = uuid.uuid4()  
+    download_audio(summary,id,".mp3")
+    return f"media/audiofiles/{id}.mp3"
 
 async def extract_tokens(text):
     """

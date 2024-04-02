@@ -17,15 +17,15 @@ var hdrTexture;
 var hdrRotation = 0;
 var hdrSkybox;
 var currentAnimation;
+var hasUserClicked=false;
 
-var sound;
 document.addEventListener("DOMContentLoaded", startGame);
-console.log("check");
+
 // Start Game
 function startGame() {
     // Set Canvas & Engine //
 
-    console.log("check");
+    
     canvas = document.getElementById("renderCanvas");
     canvas.style.width = '100%';
     canvas.style.height = '100%';
@@ -72,7 +72,7 @@ function startGame() {
     // scene.debugLayer.show({embedMode: true}).then(function () {
     // });
     //playIdle();
-    console.log("check");
+    
     
     //animateEyesAll();
 }
@@ -175,7 +175,15 @@ function importModel(model) {
         
         playIdle();
         document.addEventListener('click', function() {
-            playAudio();
+            var audio="media/audio/hello.wav";//give intro audio here
+            var lip_sync_path="static/lip-synch/hello.json";
+            //console.log("check");
+            if(hasUserClicked ==false){
+                console.log("playing into audio");
+                playAudio(audio,lip_sync_path);
+                hasUserClicked=true;
+            }
+            
         });
         hideLoadingView();
         // // Animate Face Morphs
@@ -469,17 +477,22 @@ function* animationBlending(fromAnim, fromAnimSpeedRatio, toAnim, toAnimSpeedRat
     currentAnimation = toAnim;
 }
 
-var smoothMorphTarget= true;
-var morphTargetSmoothing= 0.5;
 
-function playAudio(){
-    
-    const music = new BABYLON.Sound("Music", "media/audio/santa.wav", scene, null, {
+var music = null;
+
+function playAudio(audio_path,lip_sync_path){
+    if (music) {
+        music.stop();
+    }
+    music = new BABYLON.Sound("Music", audio_path, scene, null, {
         loop: false,
         autoplay: true,
     });
+    if(music.end || music.paused){
+        console.log("something went wrong");
+    }
     async function loadLipSync() {
-        const response = await fetch('static/lip-synch/santa.json');
+        const response = await fetch(lip_sync_path);
         const data = await response.json();
         return data;
     }
@@ -550,6 +563,8 @@ function playAudio(){
     
     
 }
+window.playAudio = playAudio;
+//console.log("check");
 // Environment Lighting
 function setLighting() {
     hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("./static/environment.env", scene);

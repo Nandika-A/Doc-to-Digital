@@ -10,43 +10,58 @@
 {% block content %}
     
         
-            <div id="loadingDiv">
-                <p id="loadingText" class="font-weight-light">LOADING</p>
-                <span class="loader"></span>
-            </div>
-            <canvas id="renderCanvas"></canvas>
-        
-    
-    <script>
-        
-    
+    <div id="loadingDiv">
+        <p id="loadingText" class="font-weight-light">LOADING</p>
+        <span class="loader"></span>
+    </div>
+    <canvas id="renderCanvas"></canvas>
 
-    var socket = new WebSocket("ws://" + window.location.host + "/ws/pirate/");
-    socket.onopen = function(e) {
-        console.log("Successfully connected to the WebSocket.");
-        socket.send(JSON.stringify({text:text }));
-        console.log("Message sent.");
-    }
-
-    socket.onmessage = function(e) {
-        console.log("Received message: " + e.context);
-        var data = JSON.parse(e.data);
-        var output = data.output;
-        var lip_sync_path = data.lip_sync_path;
-        var audio_path = data.audio_path;
-        console.log(output);
-        console.log(lip_sync_path);
-        console.log(audio_path);
-        
-        document.getElementById("summary-text").innerHTML = summary;
-        document.getElementById("summary-image").src = image;
-        document.getElementById("summary-audio").src = audio;
-    }
-</script>
+    <h1>Chat</h1>
+    <div id="summary-container">
+        <form id="message-form">
+            <input id="message-input" type="text" />
+            <input type="submit" value="Send" />
+        </form>
+        <div id="summary-details">
+            <p id="output"></p>
+        </div>
+    </div>
+       
+    
+    <script src="{% static 'js/bundle.js' %}" defer> </script>
+    <script defer>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            var socket = new WebSocket("ws://" + window.location.host + "/ws/pirate/");
+            socket.onopen = function(e) {
+                console.log("Successfully connected to the WebSocket.");
+                
+            }
+            document.querySelector('#message-form').onsubmit = function(e) {
+                e.preventDefault();
+                var text = document.querySelector('#message-input').value;
+                socket.send(JSON.stringify({text: text}));
+                console.log("Message sent.");
+            }
+            
+            socket.onmessage = function(e) {
+                console.log("Received message: " + e.data);
+                var data = JSON.parse(e.data);
+                var output = data['output'];
+                var lip_sync_path = data['lip_sync_path'];
+                var audio_path = data['audio_path'];
+                console.log(output);
+                console.log(lip_sync_path);
+                console.log(audio_path);
+                window.playAudio(audio_path,lip_sync_path);
+                document.getElementById("output").innerHTML = output;
+            
+            }
+        });
     </script>
+    
     <script src="https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.min.js"></script>
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
-    <script src="{% static 'js/bundle.js' %}" defer> </script>
+    
     
 {% endblock %}

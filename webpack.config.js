@@ -1,4 +1,5 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: './assets/scripts/maintest.js',
@@ -10,5 +11,6 @@ module.exports = {
         alias: {
             'babylonjs-loaders': 'babylonjs-loaders/babylonjs.loaders.min.js',
         },
-    },
+    }
+    
 }

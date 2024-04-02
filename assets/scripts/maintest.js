@@ -1,6 +1,6 @@
 import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders';
-
+import {Howl, Howler} from 'howler';
 
 // Global BabylonJS Variables
 var canvas ;
@@ -17,13 +17,15 @@ var hdrTexture;
 var hdrRotation = 0;
 var hdrSkybox;
 var currentAnimation;
-var leftEye, rightEye;
+var hasUserClicked=false;
 
 document.addEventListener("DOMContentLoaded", startGame);
 
 // Start Game
 function startGame() {
     // Set Canvas & Engine //
+
+    
     canvas = document.getElementById("renderCanvas");
     canvas.style.width = '100%';
     canvas.style.height = '100%';
@@ -34,7 +36,7 @@ function startGame() {
     engine = new BABYLON.Engine(canvas, true);
     scene = createScene(engine, canvas);
     camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(0, 0, 0), scene);
-    console.log(camera);
+    
     var toRender = function () {
         scene.render();
     }
@@ -64,11 +66,15 @@ function startGame() {
     ground.material = groundMat;
     ground.receiveShadows = true;
 
-    setLighting();    //https://models.readyplayer.me/--READYPLAYERME--.glb?morphTargets=ARKit&lod=1&textureFormat=webp
-    importAnimationsAndModel("https://models.readyplayer.me/65f86c8897e3a356389d9b8c.glb?morphTargets=ARKit&lod=1&textureFormat=webp&textureQuality=high");
+    setLighting();    
+    importAnimationsAndModel('static/model3.glb');//"https://models.readyplayer.me/65f86c8897e3a356389d9b8c.glb?morphTargets=ARKit&lod=1&textureFormat=webp&textureQuality=high");
     //randomAnimation();
     // scene.debugLayer.show({embedMode: true}).then(function () {
     // });
+    //playIdle();
+    
+    
+    //animateEyesAll();
 }
 
 // Create Scene
@@ -136,7 +142,7 @@ function wait(ms) {
 }
 // Import Model
 function importModel(model) {
-    console.log(model);
+    
     BABYLON.SceneLoader.ImportMeshAsync(null, model, null, scene)
        .then((result) => {
 
@@ -167,79 +173,180 @@ function importModel(model) {
         //19 explanation hand movements //20 explanation g=hand movements //21 explanation hand movements
         //22 no explanation hand movements //23 not sure explanation hand movements //24 explanation hand movements
         
-        scene.animationGroups[0].play(true, 1.0);
+        playIdle();
+        document.addEventListener('click', function() {
+            var audio="media/audio/hello.wav";//give intro audio here
+            var lip_sync_path="static/lip-synch/hello.json";
+            //console.log("check");
+            if(hasUserClicked ==false){
+                console.log("playing into audio");
+                playAudio(audio,lip_sync_path);
+                hasUserClicked=true;
+            }
+            
+        });
+        hideLoadingView();
+        // // Animate Face Morphs
+        
+    });
+};
+
+// {
+//     "targetNames": [
+//       0"viseme_sil",
+//       1"viseme_PP",
+//       2"viseme_FF",
+//       3"viseme_TH",
+//       4"viseme_DD",
+//       5"viseme_kk",
+//       6"viseme_CH",
+//       7"viseme_SS",
+//       8"viseme_nn",
+//       9"viseme_RR",
+//       10"viseme_aa",
+//       11"viseme_E",
+//       12"viseme_I",
+//       13"viseme_O",
+//       14"viseme_U",
+//       15"browDownLeft",
+//       16"browDownRight",
+//       17"browInnerUp",
+//       18"browOuterUpLeft",
+//       19"browOuterUpRight",
+//       20"eyeSquintLeft",
+//       21"eyeSquintRight",
+//       22"eyeWideLeft",
+//       23"eyeWideRight",
+//       24"jawForward",
+//       25"jawLeft",
+//       26"jawRight",
+//       27"mouthFrownLeft",
+//       28"mouthFrownRight",
+//       29"mouthPucker",
+//       30"mouthShrugLower",
+//       31"mouthShrugUpper",
+//       32"noseSneerLeft",
+//       33"noseSneerRight",
+//       34"mouthLowerDownLeft",
+//       35"mouthLowerDownRight",
+//       36"mouthLeft",
+//       37"mouthRight",
+//       38"eyeLookDownLeft",
+//       39"eyeLookDownRight",
+//       40"eyeLookUpLeft",
+//       41"eyeLookUpRight",
+//       42"eyeLookInLeft",
+//       43"eyeLookInRight",
+//       44"eyeLookOutLeft",
+//       45"eyeLookOutRight",
+//       46"cheekPuff",
+//       47"cheekSquintLeft",
+//       48"cheekSquintRight",
+//       49"jawOpen",
+//       50"mouthClose",
+//       51"mouthFunnel",
+//       52"mouthDimpleLeft",
+//       53"mouthDimpleRight",
+//       54"mouthStretchLeft",
+//       55"mouthStretchRight",
+//       56"mouthRollLower",
+//       57"mouthRollUpper",
+//       58"mouthPressLeft",
+//       59"mouthPressRight",
+//       60"mouthUpperUpLeft",
+//       61"mouthUpperUpRight",
+//       62"mouthSmileLeft",
+//       63"mouthSmileRight",
+//       64"tongueOut",
+//       65"eyeBlinkLeft",
+//       66"eyeBlinkRight"
+//     ],
+//     "name": "Wolf3D_Avatar"
+//   }
+
+function playIdle(){
+    scene.animationGroups[0].play(true, 1.0);
         //console.log("Animations: " + scene.animationGroups);
         //console.log("Animations: " + scene.animationGroups.length);
-        currentAnimation = scene.animationGroups[1];
-        hideLoadingView();
-        const headMesh = scene.getMeshByName("Wolf3D_Avatar");
-//{    
-//   "targetNames": [
-//     0"browDownLeft",
-//     1"browDownRight",
-//     2"browInnerUp",
-//     3"browOuterUpLeft",
-//     4"browOuterUpRight",
-//     5"eyeSquintLeft",
-//     6"eyeSquintRight",
-//     7"eyeWideLeft",
-//     8"eyeWideRight",
-//     9"jawForward",
-//     10"jawLeft",
-//     11"jawRight",
-//     12"mouthFrownLeft",
-//     13"mouthFrownRight",
-//     14"mouthPucker",
-//     15"mouthShrugLower",
-//     16"mouthShrugUpper",
-//     17"noseSneerLeft",
-//     18"noseSneerRight",
-//     19"mouthLowerDownLeft",
-//     20"mouthLowerDownRight",
-//     21"mouthLeft",
-//     22"mouthRight",
-//     23"eyeLookDownLeft",
-//     24"eyeLookDownRight",
-//     25"eyeLookUpLeft",
-//     26"eyeLookUpRight",
-//     27"eyeLookInLeft",
-//     28"eyeLookInRight",
-//     29"eyeLookOutLeft",
-//     30"eyeLookOutRight",
-//     31"cheekPuff",
-//     32"cheekSquintLeft",
-//     33"cheekSquintRight",
-//     34"jawOpen",
-//     35"mouthClose",
-//     36"mouthFunnel",
-//     37mouthDimpleLeft",
-//     38"mouthDimpleRight",
-//     39"mouthStretchLeft",
-//     40"mouthStretchRight",
-//     41"mouthRollLower",
-//     42"mouthRollUpper",
-//     43"mouthPressLeft",
-//     44"mouthPressRight",
-//     45"mouthUpperUpLeft",
-//     46"mouthUpperUpRight",
-//     47"mouthSmileLeft",
-//     48"mouthSmileRight",
-//     49"tongueOut",
-//     50"eyeBlinkLeft",
-//     51"eyeBlinkRight"
-//   ],
-//   "name": "Wolf3D_Avatar"
-// }
+    currentAnimation = scene.animationGroups[1];
+    //animateEyesAll();
+    //animateFaceMorphs();
+};
+function animateEyesAll(){
+    const mesh = scene.getMeshByName("Wolf3D_Avatar");
+    // animateMorphTarget registerBeforeRender
+    const animateMorphTarget = (targetIndex, initialValue, targetValue, numSteps) => {
+        let currentStep = 0;
+        const morphTarget = mesh.morphTargetManager.getTarget(targetIndex);
+
+        const animationCallback = () => {
+            currentStep++;
+            const t = currentStep / numSteps;
+            morphTarget.influence = BABYLON.Scalar.Lerp(initialValue, targetValue, t);
+            if (currentStep >= numSteps) {
+                scene.unregisterBeforeRender(animationCallback);
+            }
+        };
+
+        scene.registerBeforeRender(animationCallback);
+    };
+
+    // Animate Eyes
+    const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const animateEyes = async () => {
+        const randomNumber = getRandomNumber(1, 2);
+        if (randomNumber === 1) {
+            const targetValue = randomNumber;
+            const initialValue = mesh.morphTargetManager.getTarget(50).influence;
+            animateMorphTarget(65, initialValue, targetValue, 1);
+            animateMorphTarget(66, initialValue, targetValue, 1);
+            var randomNo = getRandomNumber(100, 200);
+            await wait(randomNo);
+            animateMorphTarget(65, targetValue, initialValue, 1);
+            animateMorphTarget(66, targetValue, initialValue, 1);
+            randomNo = getRandomNumber(100, 200);
+            await wait(randomNo);
+        }
+    };
+    setInterval(animateEyes, 1200);
+
+}
+
+function animateSyllableMorphs(index){
+    const mesh = scene.getMeshByName("Wolf3D_Avatar");
+    // animateMorphTarget registerBeforeRender
+    const easingFunction = new BABYLON.QuadraticEase();
+    easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+    const animateMorphTarget = (targetIndex, initialValue, targetValue, numSteps) => {
+        let currentStep = 0;
+        const morphTarget = mesh.morphTargetManager.getTarget(targetIndex);
+
+        const animationCallback = () => {
+            currentStep++;
+            const t = currentStep / numSteps;
+            morphTarget.influence = BABYLON.Scalar.Lerp(initialValue, targetValue, t);
+            if (currentStep >= numSteps) {
+                scene.unregisterBeforeRender(animationCallback);
+            }
+        };
+
+        scene.registerBeforeRender(animationCallback);
+    };
+    
+    const animateJawForward = () => {
+        const random = 0.2;
+        //console.log("ele");
+        const initialValue = mesh.morphTargetManager.getTarget(index).influence;
         
-        // // Animate Face Morphs
-        animateFaceMorphs();
-    });
+        animateMorphTarget(index, initialValue, 0.3, 0.5);
+    };
+    animateJawForward();
+    
 }
 //idle face movements
 function animateFaceMorphs() {
 
     const mesh = scene.getMeshByName("Wolf3D_Avatar");
-    console.log(77);
     const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     // Animate Eyes
     const animateEyes = async () => {
@@ -247,12 +354,12 @@ function animateFaceMorphs() {
         if (randomNumber === 1) {
             const targetValue = randomNumber;
             const initialValue = mesh.morphTargetManager.getTarget(50).influence;
-            animateMorphTarget(50, initialValue, targetValue, 1);
-            animateMorphTarget(51, initialValue, targetValue, 1);
+            animateMorphTarget(65, initialValue, targetValue, 1);
+            animateMorphTarget(66, initialValue, targetValue, 1);
             var randomNo = getRandomNumber(100, 200);
             await wait(randomNo);
-            animateMorphTarget(50, targetValue, initialValue, 1);
-            animateMorphTarget(51, targetValue, initialValue, 1);
+            animateMorphTarget(65, targetValue, initialValue, 1);
+            animateMorphTarget(66, targetValue, initialValue, 1);
             randomNo = getRandomNumber(100, 200);
             await wait(randomNo);
         }
@@ -282,25 +389,25 @@ function animateFaceMorphs() {
         const random = Math.random() * 0.1;
         const initialValue = mesh.morphTargetManager.getTarget(2).influence;
         const targetValue = random;
-        animateMorphTarget(2, initialValue, targetValue, 15);
-        animateMorphTarget(3, initialValue, targetValue, 15);
-        animateMorphTarget(4, initialValue, targetValue, 15);
+        animateMorphTarget(17, initialValue, targetValue, 15);
+        animateMorphTarget(18, initialValue, targetValue, 15);
+        animateMorphTarget(19, initialValue, targetValue, 15);
     };
 
     // Smile
     const animateSmile = () => {
         const random = Math.random() * 0.18 + 0.02;
-        const initialValue = mesh.morphTargetManager.getTarget(47).influence;
+        const initialValue = mesh.morphTargetManager.getTarget(62).influence;
         const targetValue = random;
-        animateMorphTarget(47, initialValue, targetValue, 30);
-        animateMorphTarget(48, initialValue, targetValue, 30);
+        animateMorphTarget(62, initialValue, targetValue, 30);
+        animateMorphTarget(63, initialValue, targetValue, 30);
     };
 
     // Mouth Left / Right
     const animateMouthLeftRight = () => {
         const random1 = Math.random() * 0.7;
         const randomLeftOrRight = getRandomNumber(0, 1);
-        const targetIndex = randomLeftOrRight === 1 ? 22 : 21;
+        const targetIndex = randomLeftOrRight === 1 ? 37 : 36;
         const initialValue = mesh.morphTargetManager.getTarget(targetIndex).influence;
         const targetValue = random1;
         animateMorphTarget(targetIndex, initialValue, targetValue, 90);
@@ -309,27 +416,27 @@ function animateFaceMorphs() {
     // Nose
     const animateNose = () => {
         const random = Math.random() * 0.7;
-        const initialValue = mesh.morphTargetManager.getTarget(17).influence;
+        const initialValue = mesh.morphTargetManager.getTarget(32).influence;
         const targetValue = random;
-        animateMorphTarget(17, initialValue, targetValue, 60);
-        animateMorphTarget(18, initialValue, targetValue, 60);
+        animateMorphTarget(32, initialValue, targetValue, 60);
+        animateMorphTarget(33, initialValue, targetValue, 60);
     };
 
     // Jaw Forward
     const animateJawForward = () => {
         const random = Math.random() * 0.5;
-        const initialValue = mesh.morphTargetManager.getTarget(9).influence;
+        const initialValue = mesh.morphTargetManager.getTarget(24).influence;
         const targetValue = random;
-        animateMorphTarget(9, initialValue, targetValue, 60);
+        animateMorphTarget(24, initialValue, targetValue, 60);
     };
 
     // Cheeks
     const animateCheeks = () => {
         const random = Math.random() * 1;
-        const initialValue = mesh.morphTargetManager.getTarget(32).influence;
+        const initialValue = mesh.morphTargetManager.getTarget(47).influence;
         const targetValue = random;
-        animateMorphTarget(32, initialValue, targetValue, 60);
-        animateMorphTarget(33, initialValue, targetValue, 60);
+        animateMorphTarget(47, initialValue, targetValue, 60);
+        animateMorphTarget(48, initialValue, targetValue, 60);
     };
 
     setInterval(animateEyes, 1200);
@@ -370,6 +477,94 @@ function* animationBlending(fromAnim, fromAnimSpeedRatio, toAnim, toAnimSpeedRat
     currentAnimation = toAnim;
 }
 
+
+var music = null;
+
+function playAudio(audio_path,lip_sync_path){
+    if (music) {
+        music.stop();
+    }
+    music = new BABYLON.Sound("Music", audio_path, scene, null, {
+        loop: false,
+        autoplay: true,
+    });
+    if(music.end || music.paused){
+        console.log("something went wrong");
+    }
+    async function loadLipSync() {
+        const response = await fetch(lip_sync_path);
+        const data = await response.json();
+        return data;
+    }
+    var lipsync =loadLipSync();//{};//= JSON.parse('static/lip-synch/santa.json');
+    // fetch('static/lip-synch/santa.json')
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         lipsync = data;
+    //         //console.log(data);
+    //     }
+        
+    // );
+    var mouthcues={};
+    lipsync.then(data => {
+        const mouthCues = data.mouthCues;
+        mouthcues=mouthCues; 
+    });
+    const corresponding = {
+        A: 1,//"viseme_PP",
+        B: 5,//"viseme_kk",
+        C: 12,//"viseme_I",
+        D: 10,//"viseme_AA",
+        E: 13,//"viseme_O",
+        F: 14,//"viseme_U",
+        G: 2,//"viseme_FF",
+        H: 3,//"viseme_TH",
+        X: 1,//"viseme_PP",
+    };
+    animateEyesAll();
+    scene.registerBeforeRender(() => {        
+        if (music.paused || music.ended) {
+          //setAnimation("Idle");
+          animateFaceMorphs();
+          
+        }
+        
+        const mesh = scene.getMeshByName("Wolf3D_Avatar");
+        let manager = mesh.morphTargetManager;
+
+        // Function to set the influence of a morph target based on a mouth cue
+        function setMouthShape(cue) {
+            let targetIndex = corresponding[cue.value];
+            manager.getTarget(targetIndex).influence = 1;
+        }
+
+        // Function to reset all morph targets
+        function resetMouthShape() {
+            for (let i = 0; i < manager.numTargets; i++) {
+                manager.getTarget(i).influence = 0;
+            }
+        }
+
+        // Iterate over the mouth cues and set the mouth shape at the appropriate times
+        function updateMouthShape() {
+            let currentAudioTime = music.currentTime;
+            for (let i = 0; i < mouthcues.length; i++) {
+                let cue = mouthcues[i];
+                if (currentAudioTime >= cue.start && currentAudioTime <= cue.end) {
+                    resetMouthShape();
+                    setMouthShape(cue);
+                    break;
+                }
+            }
+        }
+        scene.registerBeforeRender(updateMouthShape);
+    
+       });
+    
+    
+}
+window.playAudio = playAudio;
+//console.log("check");
 // Environment Lighting
 function setLighting() {
     hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("./static/environment.env", scene);

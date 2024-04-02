@@ -1,0 +1,14 @@
+{
+  "metadata": {
+    "soundFile": "/home/eleensmathew/hack36/Rhubarb-Lip-Sync-1.13.0-Linux/Rhubarb-Lip-Sync-1.13.0-Linux/../../media/audio/hello.wav",
+    "duration": 1.35
+  },
+  "mouthCues": [
+    { "start": 0.00, "end": 0.26, "value": "X" },
+    { "start": 0.26, "end": 0.30, "value": "C" },
+    { "start": 0.30, "end": 0.41, "value": "E" },
+    { "start": 0.41, "end": 0.48, "value": "F" },
+    { "start": 0.48, "end": 0.76, "value": "B" },
+    { "start": 0.76, "end": 1.35, "value": "X" }
+  ]
+}

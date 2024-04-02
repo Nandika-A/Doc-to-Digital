@@ -9,89 +9,59 @@
 
 {% block content %}
     
-        <!--<div id="myThreeJS" >-->
-            <div id="loadingDiv">
-                <p id="loadingText" class="font-weight-light">LOADING</p>
-                <span class="loader"></span>
-            </div>
-            <canvas id="renderCanvas"></canvas>
-        <!--</div>-->
-        <!-- <div id="htmlContent" >
-            <div id="messages" class = "card">
-                <input type="text" id="message-input" placeholder="Enter message">
-                <button id="send-message">Send</button>
-            </div>
-            <div class="loading" id="js-loader"><div class="loader"></div></div>
-            <form id="upload-form">
-                <input type="file" id="image-upload" accept="image/*"> take image
-                <button type="submit">Upload</button>
-            </form>
-        </div> -->
-    
-    <script>
         
-    //     var ws = new WebSocket("ws://localhost:8000/practice/");
-    //     var animNo;
-    //     //onmessage waits for connection
-    //     ws.onmessage = function(event) {
-    //         var messages = document.getElementById('messages');
-    //         var message = document.createElement('p');
-    //         message.style.color = 'black';
-    //         try {
-    //             let data = JSON.parse(event.data);
-    //             console.log("data is ",data);
-    //             if (data.animNo) {
-    //                 animNo = data.animNo; //animNo is animation number
-    //                 playWithLLM(animNo);
-    //                 console.log("animNo is ",data.animNo);
-                
-    //             }
-    //             if (data.llm_out) {
-    //                 message.textContent = data.llm_out;
-    //             }
-    //             if (data.image_text) {
-    //                 message.textContent = data.image_text;
-    //                 console.log("image text is ",data.image_text);
-    //             }
-    //             messages.appendChild(message);
-                
-    //         } catch (error) {
-    //             console.error("Error parsing JSON:", event.data);
-    //             console.error(error);
-    //         }
-    //     };
+    <div id="loadingDiv">
+        <p id="loadingText" class="font-weight-light">LOADING</p>
+        <span class="loader"></span>
+    </div>
+    <canvas id="renderCanvas"></canvas>
+
+    <h1>Chat</h1>
+    <div id="summary-container">
+        <form id="message-form">
+            <input id="message-input" type="text" />
+            <input type="submit" value="Send" />
+        </form>
+        <div id="summary-details">
+            <p id="output"></p>
+        </div>
+    </div>
+       
     
-    //     var messageInput = document.getElementById('message-input');
-    //     var sendMessageButton = document.getElementById('send-message');
-    
-    //     sendMessageButton.addEventListener('click', function() {
-    //         var message = messageInput.value;
+    <script src="{% static 'js/bundle.js' %}" defer> </script>
+    <script defer>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            var socket = new WebSocket("ws://" + window.location.host + "/ws/pirate/");
+            socket.onopen = function(e) {
+                console.log("Successfully connected to the WebSocket.");
+                
+            }
+            document.querySelector('#message-form').onsubmit = function(e) {
+                e.preventDefault();
+                var text = document.querySelector('#message-input').value;
+                socket.send(JSON.stringify({text: text}));
+                console.log("Message sent.");
+            }
             
-    //         if (message.trim() !== '') { // Check if message is not empty
-    //             console.log(message);
-    //             ws.send(message);
-    //             messageInput.value = ''; 
-    //         }
-    //     });
-    //     document.getElementById('upload-form').addEventListener('submit', function(event) {
-    //         event.preventDefault();
-    //         var fileInput = document.getElementById('image-upload');
-    //         var file = fileInput.files[0];
-    //         if (file) { // Check if file is not null
-    //             var reader = new FileReader();
-    //             reader.onload = function(event) {
-    //                 var arrayBuffer = event.target.result;
-    //                 ws.send(arrayBuffer);
-    //             };
-    //             reader.readAsArrayBuffer(file);
-    //             fileInput.value = ''; // Clear the file input
-    //         }
-    //     });
-    
+            socket.onmessage = function(e) {
+                console.log("Received message: " + e.data);
+                var data = JSON.parse(e.data);
+                var output = data['output'];
+                var lip_sync_path = data['lip_sync_path'];
+                var audio_path = data['audio_path'];
+                console.log(output);
+                console.log(lip_sync_path);
+                console.log(audio_path);
+                window.playAudio(audio_path,lip_sync_path);
+                document.getElementById("output").innerHTML = output;
+            
+            }
+        });
     </script>
+    
     <script src="https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.min.js"></script>
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
-    <script src="{% static 'js/bundle.js' %}" defer> </script>
+    
     
 {% endblock %}

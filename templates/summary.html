@@ -1,22 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summary</title>
     <style>
-        #summary-container {
+        .loader {
             display: flex;
-            flex-direction: row;
-            align-items: flex-start;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
         }
 
-        #summary-image {
-            width: 100%;
-            max-width: 50%; 
+        .loader-text {
+            font-size: 18px;
+            font-weight: bold;
         }
+        #summary-container {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+    }
 
-        #summary-details {
-            margin-left: 10%; 
-        }
+    #summary-image {
+        height: 100%;
+        width: 100%;
+        max-width: 50%; 
+        max-height: 60%;
+    }
 
-        #summary-audio {
-            margin-top: 2%;
-        }
+    #summary-details {
+        margin-left: 10%; 
+    }
+
+    #summary-audio {
+        margin-top: 2%;
+    }
     </style>
 </head>
 <body>
@@ -24,10 +43,12 @@
     <div id="summary-container">
         <img id="summary-image" src="" alt="Summary Image">
         <div id="summary-details">
-            <p id="summary-text"></p>
+            <p id="summary-text" class="loader">
+                <span class="loader-text">Loading...</span>
+            </p>
         </div>
     </div>
-    <audio id="summary-audio" controls>
+    <audio id="summary-audio" controls autoplay>
         <source src="" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
@@ -45,13 +66,27 @@
         console.log("Received message: " + e.data);
         var data = JSON.parse(e.data);
         var summary = data.summary[0].summary_text;
-        var image = data.image;
+        var imageList = data.image;
         var audio = data.audio;
         console.log(summary);
-        console.log(image);
+        console.log(imageList);
         console.log(audio);
+
         document.getElementById("summary-text").innerHTML = summary;
-        document.getElementById("summary-image").src = image;
+
+        for (var i = 0; i < imageList.length; i++) {
+            var image = imageList[i];
+            if(i > 0)
+            {
+                setTimeout(() => {
+                    document.getElementById("summary-image").src = image;
+                }, 2000);
+            }
+            else 
+            {
+                document.getElementById("summary-image").src = image;
+            }
+        }
         document.getElementById("summary-audio").src = audio;
     }
 </script>

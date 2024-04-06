@@ -175,7 +175,7 @@ function importModel(model) {
         
         playIdle();
         document.addEventListener('click', function() {
-            var audio="media/audio/hello.wav";//give intro audio here
+            var audio="static/audio/hello.wav";//give intro audio here
             var lip_sync_path="static/lip-synch/hello.json";
             //console.log("check");
             if(hasUserClicked ==false){

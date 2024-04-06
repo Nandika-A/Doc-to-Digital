@@ -1,7 +1,10 @@
 from django.shortcuts import render
 import os
 import subprocess
+#from main.views import text_to_speech
 
+def display_page(request):
+    return render(request, 'pirate.html')
 
 def get_llm_output(text):   	
     #get the llm output here also get animation number
@@ -12,7 +15,8 @@ def get_llm_output(text):
 
 def text_to_speech(text):
     #save audio in media/audio folder
-    return "media/audio/hello.wav"
+
+    return "pirate/static/audio/hello.wav"
     
 def get_lip_sync(audio_path):
     audio_base_name = os.path.basename(audio_path)

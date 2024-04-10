@@ -272,6 +272,11 @@ function playIdle(){
     //animateEyesAll();
     //animateFaceMorphs();
 };
+function playAnimation(num){
+    scene.animationGroups[num].play(false,1.0);
+    currentAnimation = scene.animationGroups[1];
+}
+window.playAnimation = playAnimation;
 function animateEyesAll(){
     const mesh = scene.getMeshByName("Wolf3D_Avatar");
     // animateMorphTarget registerBeforeRender

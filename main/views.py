@@ -20,6 +20,7 @@ async def summary_per_page(text):
     return output
 
 def index(request):
+    #return render(request, 'pirate.html')
     if request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():

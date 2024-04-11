@@ -49,9 +49,11 @@
                 var output = data['output'];
                 var lip_sync_path = data['lip_sync_path'];
                 var audio_path = data['audio_path'];
+                var animation_no=data['animation_no'];
                 console.log(output);
                 console.log(lip_sync_path);
                 console.log(audio_path);
+                window.playAnimation(animation_no);
                 window.playAudio(audio_path,lip_sync_path);
                 document.getElementById("output").innerHTML = output;
             

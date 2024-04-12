@@ -47,17 +47,16 @@ def play_mp3(file_path):
         pygame.time.Clock().tick(10)
 
 async def text_to_speech(summary):
-    # global audionum 
-    # tts = gTTS(f'{summary}',tld ='us',slow=False)
-    # mp3_path = f'media/audiofiles/audio{audionum}.mp3'
-    # tts.save(mp3_path)
-    # audionum = audionum + 1
-
     """
     This function gets the summary of each page and converts it to speech for each page.
     After converting the text to speech, save the audio file in audio_files folder and return the path of the audio file.
     To play the audio file run play_mp3 function
     """
+    # global audionum 
+    # tts = gTTS(f'{summary}',tld ='us',slow=False)
+    # mp3_path = f'media/audiofiles/audio{audionum}.mp3'
+    # tts.save(mp3_path)
+    # audionum = audionum + 1
     # play_mp3(mp3_path)
     # print(mp3_path)
     id = uuid.uuid4()  
@@ -84,8 +83,7 @@ async def extract_tokens(text):
         tokens = [] 
 
     print(tokens)
-    return ["media/Latte_and_dark_coffee.jpg", "media/NationalGeographic_2572187_square.jpg","media/Latte_and_dark_coffee.jpg", "media/NationalGeographic_2572187_square.jpg"]
-    # return scrapper(tokens)
+    return scrapper(tokens)
 
 def scrapper(tokens):
     """

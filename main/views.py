@@ -83,7 +83,8 @@ async def extract_tokens(text):
         tokens = [] 
 
     print(tokens)
-    return scrapper(tokens)
+    return ["media/Cloud_computing.svg", "media/cropped-mdpr-square.png", "media/iot-image.png", "media/mdpr.jpg", "media/Trust.jpg", "media/Trustworthiness-building-trust_65871343-1.jpg"]
+    # return scrapper(tokens)
 
 def scrapper(tokens):
     """

@@ -11,3 +11,11 @@ Our platform converts static documents into dynamic movies by generating images 
 In the game component, users interact with a 3D character who quizzes them on key concepts extracted from the PDF. This interactive format encourages active participation and reinforces learning through question-answer interactions.
 ### 3. Enhanced Explanation:
 The combination of visual imagery and synchronized audio narration ensures a comprehensive explanation of document content, facilitating better understanding and retention.
+
+## How to use this project
+1. Fork this GitHub repository.
+2. Clone the repository in your local system.
+3. Install all the requirements
+4. Start the Django server
+5. Upload the document on the website
+6. Get it converted into a movie and a game.
